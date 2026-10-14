@@ -258,3 +258,11 @@ MMH Report Hub / CRM (skill `gh-webapp-upgrader`). App dùng để dự thi "Nh�
   Backend: `accountsMap` không gọi `themGVBM_`; `htSaveGV` / `htMailGV` trả lỗi. App: `isGV()` luôn false, bỏ cột / nhập Excel "Nhận xét của GVBM" (NXGV), nút "Đề nghị GVBM nhập",
   danh sách giáo viên ở thẻ **Môn học**; PDF kết quả học tập chỉ còn nhận xét GVCN. Web demo bỏ vai "GV bộ môn (Toán)". Không thêm lại GVBM ở giao diện, hướng dẫn, video.
 
+## v6.5 — Trợ lý AI (Claude)
+- **`ai.js` (`window.AI65`, nạp sau `kythi.js`)**: bọc `openRemark` ⇒ khung `.ai65` dưới `#rkNx` "Gợi ý nhận xét bằng AI" (nhận xét tháng + điểm mạnh / cần cố gắng / gợi ý cho cô, nút Hoàn tác);
+  bọc `renderBC` ⇒ "AI viết nhận xét chung & phương hướng" (điền `#bcNx` / `#bcPh` + `bcSave`). Chỉ GVCN. Số liệu gửi đi **ẩn danh** (`duLieuHS` / `duLieuLop`: không họ tên, mã HS, ghi chú tự do).
+- **Backend `AiTroLy.gs`** (yenhoa-backend): `aiTrangThai`, `aiGoiY` {loai: `nx_hs` | `bc_lop`, data} — máy chủ tự dựng câu hỏi + `output_config.format` json_schema, lọc khoá cá nhân (`aiSach_`),
+  giới hạn lượt/ngày (`AI_MAX_NGAY`, mặc định 300). Claude API `claude-opus-5-5` (đổi bằng thuộc tính `AI_MODEL`), effort `low`, `fallbacks:"default"`. Khoá `CLAUDE_API_KEY` trong
+  Thuộc tính tập lệnh (KHÔNG đưa vào repo / chat). Cần quyền UrlFetchApp: chủ script chạy `capQuyenAI` 1 lần (Deploy: `push_only` ⇒ cấp quyền ⇒ deploy).
+- Demo / mock: `htdemo.js` `aiMau()` soạn câu trả lời mẫu từ đúng số liệu ẩn danh (không gọi AI thật). `run.js` mục v6.5 kiểm không lộ tên / mã HS. Ảnh: `tools/demo/cap65.js`.
+- Video / hồ sơ dự thi: nêu rõ công cụ AI — Claude Code (xây dựng toàn bộ app + backend), Claude API (trợ lý trong app), ElevenLabs (giọng đọc video), Gemini (ảnh cô Thảo).

@@ -45,6 +45,27 @@
       kyThi: kyThi, rule: JSON.parse(JSON.stringify(RULE)), diem: diem.map(function (d) { return d.concat(['Giáo viên chủ nhiệm', '2026-10-10 08:00']); }),
       hoso: hoso, scn: { 'cfg.bgh_email': 'bgh@example.com' }, mails: [] };
   }
+  function aiMau(loai, d) {   /* câu trả lời mẫu cho Trợ lý AI ở bản demo / kiểm thử */
+    var low = function (s) { return String(s || '').toLowerCase(); };
+    if (loai === 'bc_lop') {
+      var xl = (d.xepLoai || []).filter(function (x) { return x.soHS; }).map(function (x) { return x.soHS + ' em ' + low(x.loai); }).join(', ');
+      var loi = (d.loiThuongGap || []).slice(0, 2).map(function (x) { return low(x.noiDung) + ' (' + x.lan + ' lượt)'; }).join(' và ');
+      var tr = d.kyTruoc ? (d.diemTBLop >= d.kyTruoc.diemTBLop ? ', nhích lên so với kỳ trước' : ', giảm nhẹ so với kỳ trước') : '';
+      return { nhanXet: 'Trong ' + (d.ky || 'kỳ này') + ', tập thể lớp duy trì nề nếp tương đối ổn định với điểm trung bình ' + d.diemTBLop + tr + '. Lớp có ' + d.luotDuocCong + ' lượt được cộng điểm, cho thấy tinh thần tích cực tham gia phong trào; xếp loại gồm ' + (xl || 'chưa đủ dữ liệu') + '. '
+          + (loi ? 'Các lỗi còn lặp lại chủ yếu là ' + loi + ', cần được nhắc nhở sớm. ' : '') + (d.soHSCanQuanTam ? 'Có ' + d.soHSCanQuanTam + ' em cần được quan tâm, đồng hành thêm. ' : '') + 'Nhìn chung, lớp có nền tảng tốt để tiếp tục tiến bộ trong thời gian tới.',
+        phuongHuong: '- Duy trì kiểm tra nề nếp đầu giờ, nhắc nhở ngay khi phát hiện vi phạm.\n- Tập trung khắc phục ' + (loi ? 'các lỗi ' + loi : 'các lỗi thường gặp') + ' qua cán bộ lớp và các tổ.\n- Trao đổi riêng, phối hợp với gia đình các em cần quan tâm.\n- Tuyên dương kịp thời các em tiến bộ, đẩy mạnh thi đua giữa các tổ.' };
+    }
+    var vp = d.viPham || [], kc = d.duocCong || [], kt = (d.kyThi || [])[0], mon = (d.diemKiemTra || []).filter(function (m) { return +String(m.cuoiKi || m.giuaKi || 0).replace(',', '.') >= 8; }).map(function (m) { return m.mon; }).slice(0, 2);
+    return {
+      nhanXet: 'Trong ' + (d.ky || 'tháng') + ', em đạt điểm trung bình ' + d.diemTBThang + ', xếp loại ' + low(d.xepLoaiThang) + '. '
+        + (kc.length ? 'Em tích cực tham gia hoạt động của lớp (' + low(kc[0].noiDung) + '), đáng được ghi nhận. ' : '')
+        + (mon.length ? 'Kết quả kiểm tra các môn ' + mon.join(', ') + ' tốt. ' : '') + (kt ? 'Em tham gia ' + low(kt.kyThi) + ', đạt ' + kt.diem + '/' + kt.thangDiem + '. ' : '')
+        + (vp.length ? 'Em cần khắc phục lỗi "' + low(vp[0].noiDung) + '" để giữ vững nề nếp. ' : 'Em giữ nề nếp tốt, không vi phạm. ') + 'Cô tin em sẽ tiếp tục cố gắng và tiến bộ hơn.',
+      diemManh: [kc.length ? 'Tích cực: ' + low(kc[0].noiDung) : 'Chấp hành tốt nội quy lớp'].concat(mon.length ? ['Học tốt môn ' + mon.join(', ')] : []),
+      canCoGang: vp.length ? vp.slice(0, 2).map(function (x) { return 'Khắc phục lỗi "' + low(x.noiDung) + '"' + ' (' + x.lan + ' lần)'; }) : ['Duy trì sự ổn định'],
+      goiYGV: vp.length ? 'Trao đổi riêng, nhẹ nhàng với em về lỗi "' + low(vp[0].noiDung) + '"; nhờ cán bộ lớp nhắc nhở và ghi nhận khi em tiến bộ.' : 'Tuyên dương trước lớp để em tiếp tục phát huy.'
+    };
+  }
   function api(st, a, p, who, students) {
     var gvcn = who === 'gvcn', gvMon = null,   /* v6.4: không còn vai giáo viên bộ môn */ cb = who === 'lt' || who === 'tt';
     var ddCB = function (dd) { return dd === 'GK' || dd === 'CK' || /^KT#/.test(dd); };
@@ -104,6 +125,9 @@
         case 'scnImgGet': need(); var f = (st.img || {})[p.id]; return f ? { ok: true, name: f.n, mime: f.m, data: f.data } : { ok: false, error: 'Không tìm thấy ảnh.' };
         case 'htMailBGH': need(); st.mails.push({ kind: 'bgh', to: p.to || st.scn['cfg.bgh_email'], subject: p.subject, html: p.html, files: (p.files || []).map(function (x) { return x.name; }) }); return { ok: true, to: [p.to || st.scn['cfg.bgh_email']] };
         case 'htMailGV': return { ok: false, error: 'Sổ không còn gửi thư cho giáo viên bộ môn.' };
+        /* v6.5: Trợ lý AI — bản mô phỏng soạn câu trả lời mẫu từ đúng số liệu ẩn danh app gửi (bản thật: Claude, AiTroLy.gs) */
+        case 'aiTrangThai': return { ok: true, on: gvcn, model: 'claude-opus-5-5 (mô phỏng)' };
+        case 'aiGoiY': need(); st.aiN = (st.aiN || 0) + 1; return { ok: true, model: 'claude-opus-5-5 (mô phỏng)', goiY: aiMau(p.loai, p.data || {}) };
         case 'htMailPH': need(); var gui = 0, bo = [];
           (p.items || []).forEach(function (it) { var s = (students || []).filter(function (x) { return x.ma === it.ma; })[0]; if (!s || !/@/.test(s.email || '')) { bo.push(s ? s.ten : it.ma); return; } gui++; st.mails.push({ kind: 'ph', to: s.email, subject: it.subject, html: it.html }); });
           return { ok: true, gui: gui, bo: bo };

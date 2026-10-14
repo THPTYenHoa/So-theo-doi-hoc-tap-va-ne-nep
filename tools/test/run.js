@@ -567,6 +567,25 @@ const W = ms => new Promise(r => setTimeout(r, ms));
   ok(!/bộ môn/.test(await gvTxt()) && !(await p.$('#htGvT')), 'v6.4: thẻ Môn học không còn danh sách giáo viên bộ môn');
   await p.context().close();
 
+  // v6.5: Trợ lý AI — gợi ý nhận xét học sinh + báo cáo lớp, số liệu gửi đi ẩn danh
+  p = await P({ as: 'gvcn' }); await p.goto(U); await p.waitForSelector('#app.on'); await W(2500);
+  await p.evaluate(() => { const c = document.querySelector('#updOk'); c && c.click(); go('ghi'); }); await W(600);
+  const maA = await p.evaluate(() => activeStudents()[3].ma), tenA = await p.evaluate(m => stu(m).ten, maA);
+  await p.evaluate(m => openRemark(m), maA); await W(500);
+  ok(await p.isVisible('#pBody .ai65 button.go'), 'v6.5: ô nhận xét có nút "Gợi ý nhận xét bằng AI"');
+  await p.click('#pBody .ai65 button.go'); await W(1500);
+  const aiC5 = p.M.CALLS.filter(c => c.a === 'aiGoiY');
+  ok(aiC5.length === 1 && aiC5[0].p.loai === 'nx_hs' && (await p.inputValue('#rkNx')).length > 40, 'v6.5: AI điền gợi ý vào ô nhận xét');
+  ok(!JSON.stringify(aiC5[0].p).includes(tenA) && !JSON.stringify(aiC5[0].p).includes(maA), 'v6.5: số liệu gửi AI không có họ tên / mã học sinh');
+  ok(await p.isVisible('#pBody .ai65 .un'), 'v6.5: có nút Hoàn tác');
+  await p.evaluate(() => { closePanel(); S.bcKy = 'thang'; go('bc'); }); await W(1200);
+  ok(await p.isVisible('#vBC .ai65 button.go'), 'v6.5: Báo cáo có nút "AI viết nhận xét chung & phương hướng"');
+  const nxA = await p.inputValue('#bcNx'); await p.click('#vBC .ai65 button.go'); await W(1500);
+  const aiB5 = p.M.CALLS.filter(c => c.a === 'aiGoiY' && c.p.loai === 'bc_lop');
+  ok(aiB5.length === 1 && (await p.inputValue('#bcNx')) !== nxA && /^- /m.test(await p.inputValue('#bcPh')), 'v6.5: AI viết lại nhận xét chung + phương hướng');
+  ok(!(await p.evaluate(n => activeStudents().some(s => n.includes(s.ten)), JSON.stringify(aiB5[0].p))), 'v6.5: báo cáo gửi AI không có tên học sinh');
+  await p.context().close();
+
   ok(errs.length === 0, 'không lỗi JavaScript' + (errs.length ? ': ' + errs.slice(0, 3).join(' | ') : ''));
   await b.close(); console.log(fail ? '\n' + fail + ' lỗi' : '\nTất cả đạt'); process.exit(fail ? 1 : 0);
 })();
