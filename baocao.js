@@ -152,7 +152,7 @@
       + '<div class="g2"><div class="card"><h3>' + (ky.k === 'thang' ? 'Điểm từng tuần' : 'Điểm TB tuần qua các tháng') + '</h3>' + line(pts, { w: 470, h: 172, fmt: ky.k === 'thang' ? nz : f1 }) + '</div>'
       + '<div class="card"><h3>Cộng / trừ ' + (ky.k === 'thang' ? 'theo tuần' : 'theo tháng') + '</h3>' + bars2(br, { w: 470, h: 160 }) + '</div></div>';
     var out = page(h, p1, foot);
-    /* v6.3: trang Kết quả học tập (điểm các môn, biểu đồ, nhận xét GV bộ môn + chủ nhiệm) khi sổ có dữ liệu điểm */
+    /* v6.3: trang Kết quả học tập (điểm các môn, biểu đồ, nhận xét giáo viên chủ nhiệm) khi sổ có dữ liệu điểm */
     if (o.grades !== false && window.HT && HT.gradePage) { try { out += HT.gradePage(D, ma, ky, o); } catch (e) {} }
     /* trang 2: lỗi, khen, nhận xét */
     var loi = {}; X.tru.forEach(function (e) { var k = e[8] || e[7]; loi[k] = (loi[k] || 0) + 1; });

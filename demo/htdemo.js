@@ -10,9 +10,6 @@
   var VT = { TOAN: 'Toán', VAN: 'Văn', ANH: 'Anh', SU: 'Sử', DIA: 'Địa', KTPL: 'KTPL', QPAN: 'QP-AN', GDTC: 'GDTC', HDTN: 'HĐTN', GDDP: 'GDĐP' };
   var RULE = { heSoTX: 1, heSoGK: 2, heSoCK: 3, heSoHK2: 2, lamTron: 1, totDiemMoi: 6.5, totSoMon: 6, totDiemCao: 8, khaDiemMoi: 5, khaSoMon: 6, khaDiemCao: 6.5,
     datSoMon: 6, datDiem: 5, datSan: 3.5, datToiDaCD: 1, xsSoMon: 6, xsDiem: 9, nxTiLeDat: 0.6667 };
-  var GV = [['GV1', 'Phạm Thu Hà', ['TOAN'], 'gvtoan@example.com', '0900 000 001'], ['GV2', 'Lê Minh Châu', ['VAN'], 'gvvan@example.com', '0900 000 002'],
-    ['GV3', 'Trần Ngọc Anh', ['ANH'], 'gvanh@example.com', '0900 000 003'], ['GV4', 'Đỗ Quang Huy', ['SU', 'DIA'], '', '0900 000 004'],
-    ['GV5', 'Vũ Thanh Mai', ['KTPL', 'HDTN'], '', '0900 000 005'], ['GV6', 'Bùi Đức Long', ['QPAN', 'GDTC'], '', '0900 000 006'], ['GV7', 'Ngô Hải Yến', ['GDDP'], '', '']];
   function rnd(seed) { var s = seed; return function () { s = (s * 9301 + 49297) % 233280; return s / 233280; }; }
   function build(students) {
     var r = rnd(11), diem = [];
@@ -26,7 +23,6 @@
           diem.push([s.ma, m[0], hk, 'GK', String(gk)]);
           diem.push([s.ma, m[0], hk, 'CK', String(ck)]);
           diem.push([s.ma, m[0], hk, 'HK', String(Math.round(((lv + (r() - 0.5)) * 5 + gk * 2 + ck * 3) / 10 * 10) / 10)]);
-          if (i % 6 === 1 && (m[0] === 'TOAN' || m[0] === 'VAN' || m[0] === 'ANH')) diem.push([s.ma, m[0], hk, 'NXGV', gk >= 8 ? 'Tiếp thu nhanh, chăm chỉ (nhận xét mẫu).' : 'Cần làm bài tập đầy đủ hơn (nhận xét mẫu).']);
         });
       });
     });
@@ -45,25 +41,24 @@
         bp: i === 6 ? 'Quan tâm, phối hợp thường xuyên với gia đình' : '', rl0: 'Tốt', ht0: i % 8 === 5 ? 'Khá' : 'Tốt', kt0: i % 4 === 0 ? 'Học sinh Xuất sắc' : '', gc: '' };
     });
     return { mon: MON.map(function (m, i) { return { ma: m[0], ten: m[1], ht: m[2], tx: m[3], tt: i + 1, on: true, vt: VT[m[0]] }; }),
-      gv: GV.map(function (g) { return { ma: g[0], ten: g[1], mon: g[2], email: g[3], dt: g[4], dc: '', gc: '', on: true }; }),
-      kyThi: kyThi, rule: JSON.parse(JSON.stringify(RULE)), diem: diem.map(function (d) { return d.concat(['Giáo viên bộ môn', '2026-10-10 08:00']); }),
+      gv: [],
+      kyThi: kyThi, rule: JSON.parse(JSON.stringify(RULE)), diem: diem.map(function (d) { return d.concat(['Giáo viên chủ nhiệm', '2026-10-10 08:00']); }),
       hoso: hoso, scn: { 'cfg.bgh_email': 'bgh@example.com' }, mails: [] };
   }
-  var GV_EMAIL = { 'tok.gvtoan': ['TOAN'] };
   function api(st, a, p, who, students) {
-    var gvcn = who === 'gvcn', gvMon = who === 'gvtoan' ? ['TOAN'] : null, cb = who === 'lt' || who === 'tt';
+    var gvcn = who === 'gvcn', gvMon = null,   /* v6.4: không còn vai giáo viên bộ môn */ cb = who === 'lt' || who === 'tt';
     var ddCB = function (dd) { return dd === 'GK' || dd === 'CK' || /^KT#/.test(dd); };
     st.kyThi = st.kyThi || []; st.bao = st.bao || {};
     var need = function () { if (!gvcn) throw new Error('Chỉ giáo viên chủ nhiệm được thực hiện thao tác này.'); };
     try {
       switch (a) {
         case 'htBoot':
-          if (!gvcn && !gvMon && !cb) return { ok: false, error: 'Chỉ giáo viên và cán bộ lớp xem được điểm kiểm tra.' };
+          if (!gvcn && !gvMon && !cb) return { ok: false, error: 'Chỉ giáo viên chủ nhiệm và cán bộ lớp xem được điểm kiểm tra.' };
           var o = { ok: true, mon: st.mon, gv: st.gv, rule: st.rule, kyThi: st.kyThi, diem: gvMon ? st.diem.filter(function (d) { return gvMon.indexOf(d[1]) >= 0; }) : cb ? st.diem.filter(function (d) { return ddCB(d[3]); }) : st.diem };
           if (gvMon) o.myMon = gvMon; else if (cb) o.canBo = true; else { o.hoso = st.hoso; o.scn = st.scn; o.mailQuota = 90; }
           return o;
         case 'htSaveMon': need(); st.mon = p.mon; return { ok: true, mon: st.mon };
-        case 'htSaveGV': need(); st.gv = p.gv; return { ok: true, gv: st.gv };
+        case 'htSaveGV': return { ok: false, error: 'Sổ không còn dùng danh sách giáo viên bộ môn.' };
         case 'htSaveRule': need(); Object.keys(p.rule || {}).forEach(function (k) { st.rule[k] = p.rule[k]; }); return { ok: true, rule: st.rule };
         case 'htSaveDiem':
           if (!gvcn && !gvMon && !cb) throw new Error('Không có quyền nhập điểm.');
@@ -108,8 +103,7 @@
         case 'scnImgDel': need(); var l2 = JSON.parse(st.scn['img.' + p.key] || '[]').filter(function (x) { return x.id !== p.id; }); st.scn['img.' + p.key] = JSON.stringify(l2); return { ok: true, list: l2 };
         case 'scnImgGet': need(); var f = (st.img || {})[p.id]; return f ? { ok: true, name: f.n, mime: f.m, data: f.data } : { ok: false, error: 'Không tìm thấy ảnh.' };
         case 'htMailBGH': need(); st.mails.push({ kind: 'bgh', to: p.to || st.scn['cfg.bgh_email'], subject: p.subject, html: p.html, files: (p.files || []).map(function (x) { return x.name; }) }); return { ok: true, to: [p.to || st.scn['cfg.bgh_email']] };
-        case 'htMailGV': need(); var n = st.gv.filter(function (g) { return (p.gv || []).indexOf(g.ma) >= 0 && g.email; });
-          n.forEach(function (g) { st.mails.push({ kind: 'gv', to: g.email, subject: p.subject, html: p.html }); }); return { ok: true, n: n.length };
+        case 'htMailGV': return { ok: false, error: 'Sổ không còn gửi thư cho giáo viên bộ môn.' };
         case 'htMailPH': need(); var gui = 0, bo = [];
           (p.items || []).forEach(function (it) { var s = (students || []).filter(function (x) { return x.ma === it.ma; })[0]; if (!s || !/@/.test(s.email || '')) { bo.push(s ? s.ten : it.ma); return; } gui++; st.mails.push({ kind: 'ph', to: s.email, subject: it.subject, html: it.html }); });
           return { ok: true, gui: gui, bo: bo };

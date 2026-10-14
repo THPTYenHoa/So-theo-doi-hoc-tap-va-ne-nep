@@ -2948,7 +2948,7 @@ body,#login{background:var(--bg)}
 </style>
 <div id="hkq" role="status"></div>
 
-<script src="updates/notes.js?v=6.3"></script>
+<script src="updates/notes.js?v=6.4"></script>
 <script id="v3-js">
 'use strict';
 /* ══ ⭐ v3.0 ══
@@ -2961,7 +2961,7 @@ body,#login{background:var(--bg)}
    5. CHỦ ĐỀ (THEME): bảng màu + hình nền (themes/<id>/d.webp | m.webp, thiếu ảnh ⇒ nền hoạ tiết CSS);
       mỗi người tự chọn (localStorage.hk_theme), GVCN đặt mặc định cho lớp (backend saveTheme ⇒ bootstrap.theme).
    6. THÔNG BÁO CẬP NHẬT: updates/notes.js (window.HK_UPDATES), hiện 7 ngày, badge phiên bản mở lại lịch sử. */
-const HK_VER='6.3';
+const HK_VER='6.4';
 const nk3=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/gi,'d').toLowerCase().trim();
 const SV='<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
 
@@ -4216,7 +4216,7 @@ function dl(cur,prev,goodUp,fmt){ if(prev==null) return ''; const d=cur-prev; if
 
 /* ── lời văn tự soạn ── */
 const GOI_Y={'Nề nếp':'Cán bộ lớp kiểm tra giờ giấc, đồng phục đầu buổi; nhắc nhở ngay khi phát hiện.',
-  'Học tập':'Phối hợp giáo viên bộ môn kiểm tra bài tập về nhà; duy trì "đôi bạn cùng tiến".',
+  'Học tập':'Nhắc nhở việc chuẩn bị bài, làm bài tập về nhà; duy trì "đôi bạn cùng tiến".',
   'Kỷ luật':'Quản lý điện thoại theo quy định; trao đổi riêng với các em vi phạm nhiều lần.',
   'Vệ sinh':'Phân công trực nhật rõ ràng theo tổ; tổ trưởng kiểm tra cuối buổi.'};
 function bcAuto(P,st,pv){
@@ -4447,9 +4447,9 @@ window.lgVerify=lgVerify=async function(){
 };
 </script>
 
-<script src="baocao.js?v=6.3"></script>
+<script src="baocao.js?v=6.4"></script>
 <script src="taive.js?v=4.5"></script>
-<script src="roadmap.js?v=6.0"></script>
+<script src="roadmap.js?v=6.4"></script>
 <style id="v37-css">
 /* ══ v3.7 — chốt tháng · email phụ huynh · báo cáo có biểu đồ ══ */
 .lkb{display:flex;align-items:center;gap:10px;margin:4px 12px 12px;padding:10px 14px;border-radius:14px;background:#FFF7E6;border:1px solid #F2D9A6;color:#7A5410;font-size:13.5px;line-height:1.45}
@@ -5686,8 +5686,8 @@ table.v47t .nm{font-weight:700;color:#1B333A}table.v47t .gp{display:block;font-s
 })();
 </script>
 <script src="docxfill.js?v=5.0"></script>
-<script src="hoctap.js?v=6.3"></script>
-<script src="kythi.js?v=6.3"></script>
+<script src="hoctap.js?v=6.4"></script>
+<script src="kythi.js?v=6.4"></script>
 <script src="socn.js?v=5.0"></script>
 <script src="v6.js?v=6.3"></script>
 <script src="demo/gate.js"></script>

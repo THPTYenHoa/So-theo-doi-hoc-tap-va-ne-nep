@@ -249,6 +249,12 @@ MMH Report Hub / CRM (skill `gh-webapp-upgrader`). App dùng để dự thi "Nh�
   + huỷ nhận thư như email rèn luyện. Tắt / bật trên máy: `localStorage.hk_bao_diem`.
 - **Điểm môn dùng chung** `HT.monKT(ma, mon, ky)` = TB môn nếu có, không thì TB bài giữa / cuối kì (tham khảo); `HT.tbKT`. Tổng quan Học lực / Top điểm dùng `monKT`.
 - **PDF**: `HT.pdfLop(ky)` (Tổng kết ▸ Tải PDF báo cáo: tổng quan, theo môn, kỳ thi, bảng tổng hợp) và `HT.gradePage` chèn vào `RPT.student` (trang "Kết quả học tập":
-  điểm từng môn, biểu đồ, kỳ thi đã dự + hạng, nhận xét GV bộ môn + GVCN). Hồ sơ học sinh có thêm nút **PDF gửi cha mẹ HS**. Trang phụ huynh (`phu-huynh.html`) CHƯA có điểm
+  điểm từng môn, biểu đồ, kỳ thi đã dự + hạng, nhận xét GVCN; v6.4 bỏ nhận xét GVBM). Hồ sơ học sinh có thêm nút **PDF gửi cha mẹ HS**. Trang phụ huynh (`phu-huynh.html`) CHƯA có điểm
   (phụ huynh xem được cả lớp ⇒ cần thiết kế riêng quyền xem điểm từng con).
 - Web demo: tiêu đề "Theo dõi thi đua và nề nếp", tên học sinh ảo không trùng, `htdemo.js` có kỳ thi mẫu + `htSaveKyThi` / `htBaoDiem` (thư vào Hộp thư mô phỏng). Ảnh: `tools/demo/cap63.js`.
+
+## v6.4 — Bỏ vai giáo viên bộ môn
+- **Không có giáo viên bộ môn trong sổ** (người dùng yêu cầu 14/10/2026): GVBM không đăng nhập, không nhập điểm, không nhận thư. Chỉ **GVCN và cán bộ lớp** cập nhật điểm.
+  Backend: `accountsMap` không gọi `themGVBM_`; `htSaveGV` / `htMailGV` trả lỗi. App: `isGV()` luôn false, bỏ cột / nhập Excel "Nhận xét của GVBM" (NXGV), nút "Đề nghị GVBM nhập",
+  danh sách giáo viên ở thẻ **Môn học**; PDF kết quả học tập chỉ còn nhận xét GVCN. Web demo bỏ vai "GV bộ môn (Toán)". Không thêm lại GVBM ở giao diện, hướng dẫn, video.
+

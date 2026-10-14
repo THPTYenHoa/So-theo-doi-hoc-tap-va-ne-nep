@@ -1,6 +1,6 @@
 /* ══ v6.3 — KỲ THI & ÔN LUYỆN + EMAIL BÁO ĐIỂM (nạp sau hoctap.js) ══
    · Điểm bộ môn ▸ thẻ "Kỳ thi & ôn luyện": thi học sinh giỏi, thi ôn luyện trên app luyện thi, bài kiểm tra khác — mỗi kỳ thi 1 môn.
-     GVCN, giáo viên bộ môn (môn mình dạy), cán bộ lớp tạo kỳ thi + nhập điểm (gõ tay hoặc Excel). Điểm lưu ở DiemSo, đầu điểm "KT#<mã>".
+     GVCN, cán bộ lớp tạo kỳ thi + nhập điểm (gõ tay hoặc Excel). Điểm lưu ở DiemSo, đầu điểm "KT#<mã>".
    · Email báo điểm: sau khi nhập điểm giữa kì / cuối kì / kỳ thi, app tự gọi htBaoDiem (90 giây sau lần sửa cuối, ngay sau khi nhập Excel)
      ⇒ máy chủ gửi thư cho cha mẹ đã đăng ký nhận thông báo, chỉ gửi điểm mới / đã sửa. Tắt / bật trên máy: localStorage hk_bao_diem.
    Backend: KyThi.gs (htSaveKyThi, htBaoDiem). Mô phỏng: demo/htdemo.js. */

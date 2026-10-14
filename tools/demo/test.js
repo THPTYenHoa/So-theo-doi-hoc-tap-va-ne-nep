@@ -37,7 +37,7 @@ const U = 'http://localhost:8768/';
     await p.screenshot({ path: 'tools/test/out/demo_' + (mobile ? 'm' : 'd') + '_mail.png' });
     await p.click('#dbx .hd button');
     /* đổi vai */
-    for (const [r2, re] of [['lt', /Minh An/], ['gvtoan', /Thu Hà/]]) {
+    for (const [r2, re] of [['lt', /Minh An/]]) {
       await p.click('#dm .pill'); await p.click(`#dm a[data-r=${r2}]`); await p.waitForTimeout(2500);
       ok(re.test(await p.evaluate(() => document.body.innerText)), tag + 'đổi vai ' + r2);
     }

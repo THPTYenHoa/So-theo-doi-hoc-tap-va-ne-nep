@@ -15,7 +15,7 @@ function build() {
   const tru = [
     { ma: 'T01', nhom: 'Nề nếp', noiDung: 'Đi học muộn', diem: -2, active: true, dienGiai: 'Có mặt sau tiếng trống vào lớp.' },
     { ma: 'T02', nhom: 'Nề nếp', noiDung: 'Không mặc đồng phục', diem: -2, active: true, dienGiai: '' },
-    { ma: 'T03', nhom: 'Học tập', noiDung: 'Không làm bài tập', diem: -3, active: true, dienGiai: 'Giáo viên bộ môn báo.' },
+    { ma: 'T03', nhom: 'Học tập', noiDung: 'Không làm bài tập', diem: -3, active: true, dienGiai: 'Giáo viên báo.' },
     { ma: 'T04', nhom: 'Học tập', noiDung: 'Nói chuyện riêng', diem: -1, active: true, dienGiai: '' },
     { ma: 'T05', nhom: 'Kỷ luật', noiDung: 'Dùng điện thoại trong giờ', diem: -5, active: true, dienGiai: '' },
     { ma: 'T06', nhom: 'Vệ sinh', noiDung: 'Không trực nhật', diem: -3, active: true, dienGiai: '' }];
@@ -33,12 +33,12 @@ function build() {
   return { students, tru, cong, entries, remarks };
 }
 const HTDEMO = require('../../demo/htdemo.js');
-const EMAILS = { 'gvcn@example.com': 'gvcn', 'loptruong@example.com': 'lt', 'totruong2@example.com': 'tt', 'gvtoan@example.com': 'gvtoan' };
+const EMAILS = { 'gvcn@example.com': 'gvcn', 'loptruong@example.com': 'lt', 'totruong2@example.com': 'tt' };
 const ME = { gvcn: { name: 'Nguyễn Thu Thảo', role: 'GVCN', email: 'gvcn@example.com', to: '' },
   lt: { name: 'Nguyễn Minh An', role: 'Cán bộ lớp', email: 'loptruong@example.com', to: '1' },
   tt: { name: 'Trần Hải Bình', role: 'Tổ trưởng', email: 'totruong2@example.com', to: '2' },
-  ph: { name: 'Phụ huynh', role: 'Phụ huynh', email: '', to: '' },
-  gvtoan: { name: 'Phạm Thu Hà', role: 'Giáo viên bộ môn', email: 'gvtoan@example.com', to: '', mon: ['TOAN'] } };
+  ph: { name: 'Phụ huynh', role: 'Phụ huynh', email: '', to: '' }
+};
 async function newPage(browser, o = {}) {
   const ctx = await browser.newContext(Object.assign(o.mobile ? { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 } : { viewport: { width: 1360, height: 860 } }, { locale: 'vi-VN' }, o.ctx || {}));
   const page = await ctx.newPage();

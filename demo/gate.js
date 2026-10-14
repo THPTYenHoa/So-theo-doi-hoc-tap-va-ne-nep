@@ -79,7 +79,7 @@
 
   /* ── nút "Bản demo" ── */
   var cur = D.role();
-  var roles = [['gvcn', 'Giáo viên chủ nhiệm'], ['lt', 'Cán bộ lớp'], ['gvtoan', 'Giáo viên bộ môn (Toán)'], ['ph', 'Cha mẹ học sinh']];
+  var roles = [['gvcn', 'Giáo viên chủ nhiệm'], ['lt', 'Cán bộ lớp'], ['ph', 'Cha mẹ học sinh']];
   var dm = el('<div id="dm"><div class="mn"><h4>Xem với vai trò</h4>'
     + roles.map(function (r) { return '<a data-r="' + r[0] + '" class="' + (r[0] === cur ? 'on' : '') + '">' + r[1] + (r[0] === cur ? '<span>✓</span>' : '') + '</a>'; }).join('')
     + '<hr><a data-k="mail">Hộp thư mô phỏng <span id="dmn"></span></a><a data-k="reset">Làm lại dữ liệu ảo</a><a data-k="out">Thoát bản demo</a></div>'

@@ -3,7 +3,7 @@
    · Mọi lệnh gọi tới script.google.com bị chặn và trả lời bằng DEMO.api ⇒ không bao giờ chạm máy chủ / Google Sheet thật.
    · Bộ nhớ tách riêng: mọi khoá localStorage của trang demo tự thêm tiền tố "d11:" ⇒ không lẫn với sổ thật trên cùng máy.
    · Dữ liệu ẢO (tên học sinh giả), tạo theo ngày hôm nay: từ tháng 9 đến tháng hiện tại; lưu ở d11:hk_demo_db_v2.
-   · Email hệ thống gửi đi (phụ huynh, giáo viên bộ môn, ban giám hiệu…) không gửi thật — vào Hộp thư mô phỏng (DEMO.mails).
+   · Email hệ thống gửi đi (phụ huynh, giáo viên chủ nhiệm, ban giám hiệu…) không gửi thật — vào Hộp thư mô phỏng (DEMO.mails).
    · Lệnh backend mới ⇒ thêm `case` trong api() (và htdemo.js cho phần học tập / sổ chủ nhiệm). */
 (function () {
   'use strict';
@@ -44,10 +44,9 @@
   var ME = {
     gvcn: { name: 'Nguyễn Thu Thảo', role: 'GVCN', email: 'co.thao@demo.vn', to: '' },
     lt: { name: 'Nguyễn Minh An', role: 'Cán bộ lớp', email: 'loptruong@demo.vn', to: '1' },
-    ph: { name: 'Phụ huynh', role: 'Phụ huynh', email: '', to: '' },
-    gvtoan: { name: 'Phạm Thu Hà', role: 'Giáo viên bộ môn', email: 'gvtoan@example.com', to: '', mon: ['TOAN'] }
+    ph: { name: 'Phụ huynh', role: 'Phụ huynh', email: '', to: '' }
   };
-  var ROLE_T = { gvcn: 'Giáo viên chủ nhiệm', lt: 'Cán bộ lớp', gvtoan: 'Giáo viên bộ môn (Toán)', ph: 'Cha mẹ học sinh' };
+  var ROLE_T = { gvcn: 'Giáo viên chủ nhiệm', lt: 'Cán bộ lớp', ph: 'Cha mẹ học sinh' };
   function rnd(seed) { var x = seed; return function () { x = (x * 9301 + 49297) % 233280; return x / 233280; }; }
   function build() {
     var r = rnd(11), students = [], i, used = {};
@@ -62,7 +61,7 @@
     var tru = [
       { ma: 'T01', nhom: 'Nề nếp', noiDung: 'Đi học muộn', diem: -2, active: true, dienGiai: 'Có mặt sau tiếng trống vào lớp.' },
       { ma: 'T02', nhom: 'Nề nếp', noiDung: 'Không mặc đồng phục', diem: -2, active: true, dienGiai: '' },
-      { ma: 'T03', nhom: 'Học tập', noiDung: 'Không làm bài tập', diem: -3, active: true, dienGiai: 'Giáo viên bộ môn báo.' },
+      { ma: 'T03', nhom: 'Học tập', noiDung: 'Không làm bài tập', diem: -3, active: true, dienGiai: 'Giáo viên báo.' },
       { ma: 'T04', nhom: 'Học tập', noiDung: 'Nói chuyện riêng', diem: -1, active: true, dienGiai: '' },
       { ma: 'T05', nhom: 'Kỷ luật', noiDung: 'Dùng điện thoại trong giờ', diem: -5, active: true, dienGiai: '' },
       { ma: 'T06', nhom: 'Vệ sinh', noiDung: 'Không trực nhật', diem: -3, active: true, dienGiai: '' }];
@@ -180,7 +179,7 @@
         if (who === 'gvcn') r.phReg = DB.phReg; break;
       case 'entries': r = { ok: true, entries: DB.entries.filter(function (e) { return !p.thangs || p.thangs.indexOf(e[2]) >= 0; }).map(function (e) { e = e.slice(); if (who === 'ph' && e[13]) e[13] = '1'; return e; }), remarks: DB.remarks }; break;
       case 'addEntries':
-        if (!me || who === 'ph' || who === 'gvtoan') { r = { ok: false, error: 'Tài khoản này không ghi nề nếp.' }; break; }
+        if (!me || who === 'ph') { r = { ok: false, error: 'Tài khoản này không ghi nề nếp.' }; break; }
         if (p.rid && DB.reg['rid:' + p.rid]) { r = DB.reg['rid:' + p.rid]; r.dup = true; break; }
         var out = (p.items || []).map(function (x) { var st = stu(x.maHS) || {};
           var e = ['D' + (DB.nid++), now(), Number(p.thang), Number(p.tuan), x.maHS, st.to, x.loai, x.maMuc, x.noiDung, x.diem, me.email, me.name, x.ghiChu || ''];

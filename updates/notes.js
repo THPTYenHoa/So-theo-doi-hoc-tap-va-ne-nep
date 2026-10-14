@@ -1,6 +1,17 @@
 /* Thông báo cập nhật — Sổ hạnh kiểm 11D3. Mục mới thêm lên ĐẦU mảng (xem CLAUDE.md). */
 window.HK_UPDATES = [
   {
+    id: "2026-10-14-v6.4", version: "6.4", date: "2026-10-14",
+    title: "Điểm số chỉ do giáo viên chủ nhiệm và cán bộ lớp cập nhật",
+    summary: "Sổ không còn vai giáo viên bộ môn: chỉ giáo viên chủ nhiệm và cán bộ lớp nhập điểm kiểm tra, kỳ thi. Bảng điểm gọn hơn, phiếu báo và báo cáo PDF chỉ còn nhận xét của giáo viên chủ nhiệm.",
+    items: [
+      { type: "imp", title: "Chỉ giáo viên chủ nhiệm và cán bộ lớp nhập điểm",
+        text: "Điểm bộ môn ▸ <b>Giữa kì · cuối kì</b> hoặc <b>Kỳ thi &amp; ôn luyện</b>: giáo viên chủ nhiệm hoặc cán bộ lớp gõ điểm từng ô hoặc <b>Nhập từ Excel</b>. Có điểm mới, cha mẹ đã đăng ký tự nhận thư báo điểm.", img: "updates/v6.4/diem.jpg" },
+      { type: "imp", title: "Thẻ Môn học gọn lại",
+        text: "Điểm bộ môn ▸ <b>Môn học</b>: chỉ còn danh mục môn học. Bỏ danh sách giáo viên bộ môn, nút đề nghị giáo viên bộ môn nhập điểm và cột nhận xét của giáo viên bộ môn.", img: "updates/v6.4/mon-hoc.jpg" }
+    ]
+  },
+  {
     id: "2026-10-14-v6.3", version: "6.3", date: "2026-10-14",
     title: "Điểm kiểm tra, kỳ thi học sinh giỏi, ôn luyện — email báo điểm và báo cáo PDF",
     summary: "Phần điểm chỉ còn những gì lớp cần theo dõi: điểm kiểm tra giữa kì, cuối kì, các kỳ thi học sinh giỏi và bài ôn luyện trên app. Cán bộ lớp nhập được, cha mẹ nhận email báo điểm, báo cáo PDF có thêm phần kết quả học tập.",
