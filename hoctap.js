@@ -1,16 +1,16 @@
 /* ══ v5.0 — KẾT QUẢ HỌC TẬP (menu "Kết quả học tập", #vHT) ══
-   Backend: htBoot · htSaveDiem · htSaveMon · htSaveGV · htSaveRule · htMailGV · htMailPH (HocTap.gs, kho yenhoa-backend).
+   Backend: htBoot · htSaveDiem · htSaveMon · htSaveRule · htMailPH (HocTap.gs, kho yenhoa-backend).
    · Bảng điểm theo môn × học kì: ĐĐGtx (TX1…), giữa kì (GK), cuối kì (CK), đầu điểm mới bất kì; sửa / xoá từng ô, thêm / xoá cột.
    · Nhập từ Excel: một hay nhiều trang tính (tên trang = tên / mã môn), nhận cột mới ⇒ lưu thành đầu điểm mới; "thay hàng loạt" hoặc "chỉ cập nhật ô có giá trị".
    · Tổng kết: ĐTB môn học kì / cả năm, mức kết quả học tập (Thông tư 22/2021: Tốt · Khá · Đạt · Chưa đạt), danh hiệu cả năm.
-   · Môn học, giáo viên bộ môn (GV có email đăng nhập được, chỉ thấy môn mình dạy), cách tính điểm (tham số sửa được).
-   · Gửi phiếu báo kết quả học tập + rèn luyện tới cha mẹ học sinh; đề nghị GVBM nhập điểm / nhận xét.
+   · Môn học, cách tính điểm (tham số sửa được). v6.4: bỏ vai giáo viên bộ môn — chỉ GVCN và cán bộ lớp cập nhật điểm.
+   · Gửi phiếu báo kết quả học tập + rèn luyện tới cha mẹ học sinh.
    Ghi: cập nhật màn hình ngay, hàng đợi HTQ (localStorage hk_htq_v1) gửi nền, lỗi mạng tự thử lại. Dữ liệu đệm: hk_ht_v1. */
 (function () {
   'use strict';
   const ROLE_GV = 'Giáo viên bộ môn';
   const HT = window.HT = { d: null, loading: null, tab: 'diem', hk: 1, mon: '', ky: 'hk1', edit: null };
-  const isGV = () => S.me && S.me.role === ROLE_GV;
+  const isGV = () => false;   // v6.4: bỏ vai giáo viên bộ môn — chỉ GVCN và cán bộ lớp cập nhật điểm
   const isCB = () => S.me && S.me.role === 'Cán bộ lớp';   /* ★ v6.3: cán bộ lớp nhập điểm kiểm tra giữa / cuối kì, kỳ thi */
   const canHT = () => S.me && (isGVCN() || isGV() || isCB());
   HT.isCB = isCB; HT.canHT = canHT;
@@ -298,7 +298,7 @@
     const box = $('#vHT'); if (!box || S.view !== 'ht') return;
     if (!HT.d) { box.innerHTML = '<div class="empty"><b>Chưa tải được dữ liệu</b>Kiểm tra mạng rồi bấm lại menu Kết quả học tập.</div>'; return; }
     if (box.contains(document.activeElement) && /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName) && HT.edit == null) return;
-    const tabs = isGV() || isCB() ? [['diem', 'Giữa kì · cuối kì'], ['kt', 'Kỳ thi & ôn luyện']] : [['diem', 'Giữa kì · cuối kì'], ['kt', 'Kỳ thi & ôn luyện'], ['tk', 'Tổng kết'], ['mon', 'Môn học & giáo viên'], ['rule', 'Cách tính điểm']];
+    const tabs = isGV() || isCB() ? [['diem', 'Giữa kì · cuối kì'], ['kt', 'Kỳ thi & ôn luyện']] : [['diem', 'Giữa kì · cuối kì'], ['kt', 'Kỳ thi & ôn luyện'], ['tk', 'Tổng kết'], ['mon', 'Môn học'], ['rule', 'Cách tính điểm']];
     if (!tabs.some(t => t[0] === HT.tab)) HT.tab = 'diem';
     let h = `<div class="httabs">${tabs.map(([k, l]) => `<button data-htt="${k}" class="${HT.tab === k ? 'on' : ''}">${l}</button>`).join('')}</div>`;
     if (HT.tab === 'diem') h += viewDiem();
@@ -318,27 +318,25 @@
   /* ── Bảng điểm ── */
   function viewDiem() {
     const ms = HT.monList();
-    if (!ms.length) return `<div class="empty"><b>Chưa có môn học</b>${isGV() ? 'Giáo viên chủ nhiệm chưa gán môn cho thầy/cô.' : 'Vào thẻ Môn học &amp; giáo viên để thêm môn.'}</div>`;
+    if (!ms.length) return `<div class="empty"><b>Chưa có môn học</b>Vào thẻ Môn học để thêm môn.</div>`;
     if (!ms.some(m => m.ma === HT.mon)) HT.mon = ms[0].ma;
     const m = HT.monOf(HT.mon), hk = HT.hk, dds = HT.dds(m.ma, hk), L = activeStudents();
-    const gv = HT.d.gv.filter(g => g.mon.indexOf(m.ma) >= 0).map(g => g.ten).join(', ');
     let h = `<div class="htbar">
       <select id="htMon" aria-label="Môn học">${ms.map(x => `<option value="${esc(x.ma)}"${x.ma === m.ma ? ' selected' : ''}>${esc(x.ten)}</option>`).join('')}</select>
       <select id="htHK" aria-label="Học kì"><option value="1"${hk === 1 ? ' selected' : ''}>Học kì I</option><option value="2"${hk === 2 ? ' selected' : ''}>Học kì II</option></select>
       <span class="sp"></span>
       <button class="hb" id="htImp">${IC.up}<span class="lg">Nhập từ Excel</span></button>
-      <button class="hb" id="htExp">${IC.down}<span class="lg">Tải Excel</span></button>
-      ${isGVCN() ? `<button class="hb" id="htAskGV">${IC.mail}<span class="lg">Đề nghị GVBM nhập</span></button>` : ''}</div>`;
+      <button class="hb" id="htExp">${IC.down}<span class="lg">Tải Excel</span></button></div>`;
     h += `<div class="htnote">Nhập điểm bài <b>kiểm tra giữa kì, cuối kì</b>${m.ht === 'nx' ? ' (môn đánh giá bằng nhận xét: <b>Đ</b> / <b>CĐ</b>)' : ''}. Bấm vào ô để nhập (Enter: lưu, xuống dòng) hoặc <b>Nhập từ Excel</b>.
-      ${isCB() ? '' : 'Điểm thường xuyên giáo viên bộ môn nhập ở phần mềm quản lý điểm của trường; cột <b>TB môn</b> dán từ phần mềm đó nếu cần xếp mức học tập.'}${gv ? ' · Giáo viên bộ môn: <b>' + esc(gv) + '</b>' : ''}${HT.baoTxt ? HT.baoTxt() : ''}</div>`;
+      ${isCB() ? '' : 'Cột <b>TB môn</b> (không bắt buộc) dán từ phần mềm quản lý điểm của trường nếu cần xếp mức học tập.'}${HT.baoTxt ? HT.baoTxt() : ''}</div>`;
     const gvx = !isCB();
-    h += `<div class="htg tablewrap"><table><thead><tr><th>TT</th><th class="name">Họ và tên</th>${dds.map(d => `<th data-dd="${esc(d)}">${esc(ddLabel(d))}</th>`).join('')}${gvx && hk === 2 ? `<th>${m.ht === 'nx' ? 'KQ cả năm' : 'TB cả năm'}</th>` : ''}${gvx ? '<th>Nhận xét của GVBM</th>' : ''}</tr></thead><tbody>`;
+    h += `<div class="htg tablewrap"><table><thead><tr><th>TT</th><th class="name">Họ và tên</th>${dds.map(d => `<th data-dd="${esc(d)}">${esc(ddLabel(d))}</th>`).join('')}${gvx && hk === 2 ? `<th>${m.ht === 'nx' ? 'KQ cả năm' : 'TB cả năm'}</th>` : ''}</tr></thead><tbody>`;
     L.forEach((s, i) => {
       const tb = HT.tbHK(s.ma, m.ma, hk), cn = hk === 2 ? HT.tbCN(s.ma, m.ma) : null;
       h += `<tr data-ma="${esc(s.ma)}"><td>${i + 1}</td><td class="name">${esc(s.ten)}</td>`;
       dds.forEach(d => { const v = HT.val(s.ma, m.ma, hk, d); const n = num(v); h += `<td class="c${n != null && n < 5 || isCD(v) ? ' lo' : ''}" data-dd="${esc(d)}">${esc(fmtV(v))}</td>`; });
       if (gvx && hk === 2) h += `<td class="tb">${cn == null ? '' : typeof cn === 'number' ? f1(cn) : cn}</td>`;
-      h += (gvx ? `<td class="c nxgv" data-dd="NXGV">${esc(HT.val(s.ma, m.ma, hk, 'NXGV'))}</td>` : '') + '</tr>';
+      h += '</tr>';
     });
     h += '</tbody></table></div>';
     return h;
@@ -360,7 +358,6 @@
     const hk = box.querySelector('#htHK'); if (hk) hk.onchange = () => { HT.hk = +hk.value; HT.render(); };
     box.querySelector('#htImp').onclick = () => importExcel();
     box.querySelector('#htExp').onclick = () => exportExcel();
-    const ag = box.querySelector('#htAskGV'); if (ag) ag.onclick = askGV;
     box.querySelectorAll('td.c').forEach(td => td.onclick = () => editCell(td));
   }
   function editCell(td) {
@@ -432,24 +429,6 @@
       HT.saveDiem(items); o.close(); HT.render(); toast('Đã đổi tên cột.');
     };
   }
-  function askGV() {
-    const m = HT.monOf(HT.mon);
-    const ds = HT.d.gv.filter(g => g.email && g.on !== false);
-    if (!ds.length) { toast('Chưa có giáo viên bộ môn nào có email. Vào thẻ Môn học & giáo viên để thêm.'); return; }
-    const o = ov('Đề nghị giáo viên bộ môn nhập điểm, nhận xét', `<p>Hệ thống gửi email kèm đường dẫn tới sổ. Giáo viên đăng nhập bằng email của mình (mã 6 số), chỉ thấy và nhập được môn mình dạy.</p>
-      ${ds.map(g => `<label class="ck"><input type="checkbox" value="${esc(g.ma)}"${g.mon.indexOf(m.ma) >= 0 ? ' checked' : ''}> <span><b>${esc(g.ten)}</b> · ${esc(g.mon.map(x => (HT.monOf(x) || { ten: x }).ten).join(', '))}<br><span class="mut">${esc(g.email)}</span></span></label>`).join('')}
-      <label style="display:block;margin-top:10px">Tiêu đề</label><input type="text" id="htMs" value="Lớp ${esc(S.cfg.lop || '')}: đề nghị nhập điểm, nhận xét học kì ${HT.hk === 1 ? 'I' : 'II'}">
-      <label style="display:block;margin-top:10px">Nội dung</label><textarea id="htMb" rows="5">Giáo viên chủ nhiệm lớp ${esc(S.cfg.lop || '')} kính đề nghị thầy/cô cập nhật điểm đánh giá thường xuyên, giữa kì, cuối kì và nhận xét học sinh học kì ${HT.hk === 1 ? 'I' : 'II'} môn thầy/cô phụ trách vào Sổ theo dõi học sinh của lớp.\nTrân trọng cảm ơn thầy/cô.</textarea>`,
-      `<button class="hb" data-x>Huỷ</button><button class="hb p" data-ok>${IC.mail} Gửi email</button>`);
-    o.$('[data-x]').onclick = o.close;
-    o.$('[data-ok]').onclick = async () => {
-      const gv = o.$$('input[type=checkbox]:checked').map(x => x.value); if (!gv.length) { toast('Chọn ít nhất 1 giáo viên.'); return; }
-      const b = o.$('[data-ok]'); b.disabled = true; b.textContent = 'Đang gửi…';
-      try { const j = await rawApi('htMailGV', { gv, subject: o.$('#htMs').value, html: esc(o.$('#htMb').value).replace(/\n/g, '<br>') }, 60000); o.close(); toast('Đã gửi email tới ' + j.n + ' giáo viên.'); }
-      catch (e) { b.disabled = false; b.textContent = 'Gửi email'; err(e); }
-    };
-  }
-
   /* ── Excel ── */
   async function xlsx() { if (window.XLSX) return window.XLSX; if (window.DL && DL.load) { await DL.load('xlsx'); return window.XLSX; } throw new Error('Không tải được thư viện Excel.'); }
   function exportExcel() {
@@ -458,10 +437,10 @@
       const ms = HT.monList(); const which = isGV() ? ms : [HT.monOf(HT.mon)];
       which.forEach(m => [1, 2].forEach(hk => {
         const dds = HT.dds(m.ma, hk);
-        const rows = [['STT', 'Mã HS', 'Họ và tên'].concat(dds.map(ddLabel)).concat([m.ht === 'nx' ? 'KQ học kì' : 'ĐTBmhk', 'Nhận xét của GVBM'])];
+        const rows = [['STT', 'Mã HS', 'Họ và tên'].concat(dds.map(ddLabel)).concat([m.ht === 'nx' ? 'KQ học kì' : 'ĐTBmhk'])];
         L.forEach((s, i) => { const tb = HT.tbHK(s.ma, m.ma, hk);
-          rows.push([i + 1, s.ma, s.ten].concat(dds.map(d => { const v = HT.val(s.ma, m.ma, hk, d); const n = num(v); return n != null ? n : v; })).concat([tb == null ? '' : tb, HT.val(s.ma, m.ma, hk, 'NXGV')])); });
-        const ws = X.utils.aoa_to_sheet(rows); ws['!cols'] = [{ wch: 5 }, { wch: 8 }, { wch: 26 }].concat(dds.map(() => ({ wch: 10 }))).concat([{ wch: 9 }, { wch: 40 }]);
+          rows.push([i + 1, s.ma, s.ten].concat(dds.map(d => { const v = HT.val(s.ma, m.ma, hk, d); const n = num(v); return n != null ? n : v; })).concat([tb == null ? '' : tb])); });
+        const ws = X.utils.aoa_to_sheet(rows); ws['!cols'] = [{ wch: 5 }, { wch: 8 }, { wch: 26 }].concat(dds.map(() => ({ wch: 10 }))).concat([{ wch: 9 }]);
         X.utils.book_append_sheet(wb, ws, (m.vt || m.ma).slice(0, 22) + ' HK' + hk);
       }));
       X.writeFile(wb, 'Bang_diem_' + (S.cfg.lop || '') + (which.length === 1 ? '_' + which[0].ma : '') + '.xlsx');
@@ -472,7 +451,7 @@
     const b = bo(h).replace(/[.:()]/g, ' ').replace(/\s+/g, ' ').trim();
     if (/^(dtb|dtbm|tbm|tb mon|diem tb|diem trung binh|trung binh mon|dtbmhk|tbmhk|tb hoc ki|tb hoc ky)$/.test(b)) return isCB() ? null : 'HK';
     if (!b || /^(stt|tt|ma|ma hs|ma hoc sinh|ho ten|ho va ten|ten|lop|to|ngay sinh|gioi tinh|ghi chu|dtb.*|tbm.*|diem tb.*|trung binh.*|xep loai.*|kq.*|ket qua.*)$/.test(b)) return null;
-    if (/nhan xet/.test(b)) return isCB() ? null : 'NXGV';
+    if (/nhan xet/.test(b)) return null;   /* v6.4: không còn nhận xét của giáo viên bộ môn */
     let k = b.match(/^(?:tx|ddgtx|dgtx|kttx|thuong xuyen|ktx|diem tx|danh gia thuong xuyen)\s*(\d+)$/); if (k) return null;   /* v6.3: không nhập ĐĐGtx */
     k = b.match(/^(?:mieng|15 phut|15p|kiem tra 15 phut)\s*(\d*)$/); if (k && m) return null;
     if (/^(gk|ddggk|giua ki|giua ky|kiem tra giua ki|kiem tra giua ky|giua hoc ki|giua hoc ky)$/.test(b)) return 'GK';
@@ -615,12 +594,11 @@
     const o = ov('Gửi phiếu báo kết quả tới cha mẹ học sinh', `<p>Kỳ: <b>${esc(kyL)}</b> · ${coMail.length}/${L.length} học sinh có email cha mẹ (cột Email trong danh sách lớp).</p>
       <label class="ck"><input type="checkbox" id="pbRL" checked> <span>Kèm kết quả rèn luyện</span></label>
       <label class="ck"><input type="checkbox" id="pbCT" checked> <span>Kèm điểm giữa kì, cuối kì từng môn</span></label>
-      <label class="ck"><input type="checkbox" id="pbNX" checked> <span>Kèm nhận xét của giáo viên bộ môn</span></label>
       <label style="display:block;margin-top:8px">Lời nhắn chung</label><textarea id="pbLoi" rows="3">Kính mong gia đình tiếp tục phối hợp với nhà trường, động viên và nhắc nhở học sinh trong học tập, rèn luyện.</textarea>
       <label style="display:block;margin-top:8px">Gửi tới</label><select id="pbAi"><option value="all">Tất cả học sinh có email (${coMail.length})</option>${coMail.map(s => `<option value="${esc(s.ma)}">${esc(s.ten)}</option>`).join('')}</select>
       <div style="margin-top:10px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;max-height:260px;overflow:auto" id="pbXem"></div>`,
       `<button class="hb" data-x>Huỷ</button><button class="hb p" data-ok>${IC.mail} Gửi</button>`, { w: 820 });
-    const opt = () => ({ rl: o.$('#pbRL').checked, chiTiet: o.$('#pbCT').checked, nx: o.$('#pbNX').checked, loi: o.$('#pbLoi').value });
+    const opt = () => ({ rl: o.$('#pbRL').checked, chiTiet: o.$('#pbCT').checked, nx: false, loi: o.$('#pbLoi').value });
     const xem = () => { const ma = o.$('#pbAi').value === 'all' ? (coMail[0] || L[0] || {}).ma : o.$('#pbAi').value; o.$('#pbXem').innerHTML = ma ? '<div class="mut">Xem trước:</div>' + HT.phieuHTML(ma, ky, opt()) : ''; };
     o.$$('input,select,textarea').forEach(x => x.addEventListener('input', xem)); xem();
     o.$('[data-x]').onclick = o.close;
@@ -676,7 +654,6 @@
     const rows = ms.map(m => `<tr><td>${escH(m.ten)}</td>${cv.map(f => cell(f(m))).join('')}</tr>`).join('');
     const tbK = HT.tbKT(ma, ky), k = coTB ? HT.ketQua(ma, ky) : null, rl = HT.renLuyen(ma, ky[0] === 'g' ? 'hk' + ky[2] : ky);
     const bars = ms.filter(m => m.ht !== 'nx').map(m => ({ m, v: HT.monKT(ma, m.ma, ky) })).filter(x => x.v != null).map(x => ({ k: escH(x.m.vt || x.m.ten), v: x.v, c: cDiem(x.v), lbl: f1(x.v) }));
-    const nx = ms.map(m => ({ m, t: hks.map(hk => HT.val(ma, m.ma, hk, 'NXGV')).filter(Boolean).pop() })).filter(x => x.t);
     const rm = (D.remarks || []).filter(r => r.maHS === ma && r.nhanXet).slice(-1)[0];
     const kp = `<div class="kp" style="grid-template-columns:repeat(3,1fr)"><div class="kpi" style="--c:${tbK == null ? '#5C7A83' : cDiem(tbK)}"><div class="n">${tbK == null ? '—' : f1(tbK)}</div><div class="l">${coTB ? 'Điểm TB các môn' : 'TB bài kiểm tra'}</div></div>`
       + (k && k.muc != null ? `<div class="kpi" style="--c:${RPT.RC[k.muc]}"><div class="n">${LV[k.muc]}</div><div class="l">Kết quả học tập${k.tam ? ' · tạm xếp' : ''}</div></div>` : `<div class="kpi" style="--c:#B9761C"><div class="n">${kts.length}</div><div class="l">Kỳ thi, bài ôn luyện đã dự</div></div>`)
@@ -686,7 +663,7 @@
         return `<tr><td>${escH(String(kt.ngay).split('-').reverse().slice(0, 2).join('/'))}</td><td>${escH(kt.ten)}</td><td>${escH((HT.monOf(kt.mon) || {}).vt || kt.mon)}</td><td class="n" style="font-weight:800;color:${cDiem(v / kt.thang * 10)}">${f1(v)}${kt.thang !== 10 ? '/' + kt.thang : ''}</td><td class="n">${all.indexOf(v) + 1}/${all.length}</td></tr>`; }).join('') + '</table></div>' : '';
     const body = `<div class="g2" style="grid-template-columns:1.05fr 1fr"><div><div class="card"><h3>Điểm kiểm tra các môn · ${escH(kyLabel(ky))}</h3><table class="t"><tr><th>Môn học</th>${cols.map(c => `<th class="n">${c}</th>`).join('')}</tr>${rows}</table></div>${hks.length === 1 ? ktCard : ''}</div>`
       + `<div>${kp}<div class="card" style="margin-bottom:3mm"><h3>${coTB ? 'Điểm trung bình từng môn' : 'Điểm kiểm tra trung bình từng môn'}</h3>${RPT.hb(bars, { empty: 'Chưa có điểm.', max: 10 })}</div>`
-      + `<div class="card"><h3>Nhận xét của giáo viên</h3>${nx.length ? nx.slice(0, 5).map(x => `<div class="txt" style="margin:0 0 1.6mm"><b>${escH(x.m.ten)}:</b> ${escH(x.t.length > 140 ? x.t.slice(0, 137) + '…' : x.t)}</div>`).join('') : '<div class="none">Giáo viên bộ môn chưa ghi nhận xét.</div>'}`
+      + `<div class="card"><h3>Nhận xét của giáo viên chủ nhiệm</h3>`
       + `<div class="nx1"><b>Giáo viên chủ nhiệm${rm ? ' · tháng ' + rm.thang : ''}:</b> ${rm ? escH(rm.nhanXet) : '<i>Giáo viên chủ nhiệm sẽ cập nhật nhận xét.</i>'}</div></div>${hks.length > 1 ? ktCard : ''}</div></div>`;
     return RPT.page(RPT.head('Kết quả học tập · ' + escH(kyLabel(ky)), escH(s.ten), (ph ? 'Gửi cha mẹ học sinh' : 'Lớp <b>' + escH(S.cfg.lop || '11D3') + '</b>') + '<br>Năm học ' + escH(S.cfg.namHoc || '')), body, RPT.footTxt(D));
   };
@@ -752,54 +729,29 @@
     return r;
   };
 
-  /* ── Môn học & giáo viên ── */
+  /* ── Môn học ── */
   function viewMon() {
     const D = HT.d;
     let h = `<div class="sechead"><h2>Danh mục môn học</h2></div><div class="htnote">Môn <b>đánh giá bằng nhận xét</b> (Giáo dục thể chất, Hoạt động trải nghiệm – hướng nghiệp, Nội dung giáo dục của địa phương, Nghệ thuật) nhập Đ / CĐ. Số đầu điểm ĐGtx mỗi học kì theo số tiết của môn (Thông tư 22/2021: 35 tiết → 2, 70 tiết → 3, trên 70 tiết → 4).</div>
       <div class="htlist tablewrap"><table id="htMonT"><thead><tr><th>Đang học</th><th>Mã môn</th><th class="name">Tên môn học</th><th>Viết tắt</th><th>Hình thức đánh giá</th><th>Số ĐĐGtx</th><th></th></tr></thead><tbody>
       ${D.mon.map(m => monRow(m)).join('')}</tbody></table></div>
       <div class="htbar"><button class="hb" id="htMonAdd">${IC.plus} Thêm môn</button><span class="sp"></span><button class="hb p" id="htMonSave">${IC.save} Lưu danh mục môn</button></div>`;
-    h += `<div class="sechead"><h2>Giáo viên bộ môn</h2></div><div class="htnote">Giáo viên có <b>email</b> đăng nhập được vào sổ bằng mã 6 số, <b>chỉ thấy và nhập điểm, nhận xét môn mình dạy</b>. Danh sách này cũng được đưa vào Sổ công tác chủ nhiệm.</div>
-      <div class="htlist tablewrap"><table id="htGvT"><thead><tr><th class="name">Họ và tên</th><th>Môn dạy</th><th>Email</th><th>Điện thoại</th><th>Ghi chú</th><th></th></tr></thead><tbody>
-      ${D.gv.map(g => gvRow(g)).join('')}</tbody></table></div>
-      <div class="htbar"><button class="hb" id="htGvAdd">${IC.plus} Thêm giáo viên</button><span class="sp"></span><button class="hb p" id="htGvSave">${IC.save} Lưu danh sách giáo viên</button></div>`;
     return h;
   }
   const monRow = m => `<tr><td><input type="checkbox" data-k="on"${m.on !== false ? ' checked' : ''} style="width:20px;height:20px;min-width:0"></td><td><input data-k="ma" value="${esc(m.ma || '')}" style="width:80px"></td><td class="name"><input data-k="ten" value="${esc(m.ten || '')}" style="min-width:220px"></td><td><input data-k="vt" value="${esc(m.vt || '')}" style="width:80px"></td>
     <td><select data-k="ht"><option value="d"${m.ht !== 'nx' ? ' selected' : ''}>Điểm số</option><option value="nx"${m.ht === 'nx' ? ' selected' : ''}>Nhận xét</option></select></td><td><input data-k="tx" type="number" min="0" max="8" value="${esc(m.tx || 0)}" style="width:64px"></td><td><button class="x" title="Xoá">×</button></td></tr>`;
-  const gvRow = g => `<tr data-ma="${esc(g.ma || '')}"><td class="name"><input data-k="ten" value="${esc(g.ten || '')}" style="min-width:180px"></td>
-    <td><select data-k="mon" multiple size="1" style="min-width:150px;height:34px">${HT.d.mon.map(m => `<option value="${esc(m.ma)}"${(g.mon || []).indexOf(m.ma) >= 0 ? ' selected' : ''}>${esc(m.ten)}</option>`).join('')}</select></td>
-    <td><input data-k="email" type="email" value="${esc(g.email || '')}" style="min-width:200px"></td><td><input data-k="dt" value="${esc(g.dt || '')}" style="width:120px"></td><td><input data-k="gc" value="${esc(g.gc || '')}"></td><td><button class="x" title="Xoá">×</button></td></tr>`;
   function bindMon(box) {
-    const T = box.querySelector('#htMonT tbody'), G = box.querySelector('#htGvT tbody');
+    const T = box.querySelector('#htMonT tbody');
     const delB = root => root.querySelectorAll('.x').forEach(b => b.onclick = () => b.closest('tr').remove());
-    delB(T); delB(G);
-    G.querySelectorAll('select[multiple]').forEach(monPick);
+    delB(T);
     box.querySelector('#htMonAdd').onclick = () => { T.insertAdjacentHTML('beforeend', monRow({ ma: '', ten: '', ht: 'd', tx: 3, on: true })); delB(T); };
-    box.querySelector('#htGvAdd').onclick = () => { G.insertAdjacentHTML('beforeend', gvRow({ ma: '', ten: '', mon: [] })); delB(G); G.querySelectorAll('select[multiple]').forEach(monPick); };
     box.querySelector('#htMonSave').onclick = () => {
       const mon = Array.from(T.rows).map(tr => { const g = k => tr.querySelector(`[data-k="${k}"]`); return { on: g('on').checked, ma: g('ma').value.trim().toUpperCase(), ten: g('ten').value.trim(), vt: g('vt').value.trim(), ht: g('ht').value, tx: +g('tx').value || 0 }; }).filter(m => m.ma && m.ten);
       const dup = mon.map(m => m.ma).filter((x, i, a) => a.indexOf(x) !== i); if (dup.length) { toast('Trùng mã môn: ' + dup.join(', ')); return; }
       HT.d.mon = mon.map((m, i) => Object.assign(m, { tt: i + 1 })); htqAdd('htSaveMon', { mon }); toast('Đã lưu danh mục môn học.'); HT.render();
     };
-    box.querySelector('#htGvSave').onclick = () => {
-      const gv = Array.from(G.rows).map((tr, i) => { const g = k => tr.querySelector(`[data-k="${k}"]`);
-        return { ma: tr.dataset.ma || ('GV' + Date.now().toString(36).slice(-4) + i), ten: g('ten').value.trim(), mon: Array.from(g('mon').selectedOptions).map(o => o.value), email: g('email').value.trim().toLowerCase(), dt: g('dt').value.trim(), gc: g('gc').value.trim(), on: true }; }).filter(g => g.ten);
-      const bad = gv.filter(g => g.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(g.email)); if (bad.length) { toast('Email chưa đúng: ' + bad.map(g => g.ten).join(', ')); return; }
-      HT.d.gv = gv; htqAdd('htSaveGV', { gv }); toast('Đã lưu danh sách giáo viên bộ môn.'); HT.render();
-    };
   }
-  /* chọn nhiều môn bằng hộp nhỏ (select multiple trên điện thoại vẫn dùng được) */
-  function monPick(sel) {
-    sel.style.display = 'none';
-    const b = document.createElement('button'); b.className = 'hb'; b.style.height = '34px'; b.type = 'button';
-    const lab = () => { const v = Array.from(sel.selectedOptions).map(o => o.textContent); b.textContent = v.length ? v.join(', ') : 'Chọn môn…'; };
-    lab(); sel.after(b);
-    b.onclick = () => {
-      const o = ov('Chọn môn dạy', HT.d.mon.map(m => `<label class="ck"><input type="checkbox" value="${esc(m.ma)}"${Array.from(sel.options).find(x => x.value === m.ma && x.selected) ? ' checked' : ''}> <span>${esc(m.ten)}</span></label>`).join(''), '<button class="hb p" data-ok>Xong</button>', { w: 420 });
-      o.$('[data-ok]').onclick = () => { const v = o.$$('input:checked').map(x => x.value); Array.from(sel.options).forEach(x => x.selected = v.indexOf(x.value) >= 0); lab(); o.close(); };
-    };
-  }
+
 
   /* ── Cách tính điểm ── */
   const RULE_UI = [

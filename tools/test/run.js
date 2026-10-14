@@ -513,7 +513,7 @@ const W = ms => new Promise(r => setTimeout(r, ms));
   ok(await p.evaluate(() => NAV.find(n => n.v === 'bang').t === 'Kết quả rèn luyện' && NAV.find(n => n.v === 'ghi').t === 'Theo dõi nề nếp'), 'tên mục theo ngôn ngữ hành chính (rèn luyện, nề nếp)');
   await p.evaluate(() => go('ht')); await W(1200);
   ok(await p.locator('#vHT .htg tbody tr').count() >= 30 && p.M.CALLS.some(c => c.a === 'htBoot'), 'bảng điểm môn đầu tiên đủ danh sách lớp');
-  /* v6.3: không nhập ĐĐGtx — bảng điểm chỉ Giữa kì, Cuối kì, TB môn, Nhận xét GVBM */
+  /* v6.3: không nhập ĐĐGtx — bảng điểm chỉ Giữa kì, Cuối kì, TB môn (v6.4: bỏ nhận xét GVBM) */
   const ths = await p.$$eval('#vHT .htg thead th', a => a.map(x => x.textContent.trim()));
   ok(!ths.some(t => /ĐĐGtx/.test(t)) && ths.includes('Giữa kì') && ths.includes('Cuối kì') && ths.includes('TB môn'), 'v6.3: bảng điểm chỉ giữa kì, cuối kì, TB môn (không ĐĐGtx): ' + ths.join(' | '));
   await p.click('#vHT td.c[data-dd="GK"]'); await p.keyboard.type('9,5'); await p.keyboard.press('Enter'); await W(1200);
@@ -557,11 +557,14 @@ const W = ms => new Promise(r => setTimeout(r, ms));
   await p.evaluate(() => SCN.guiBGH()); await W(300); await p.click('#htov [data-ok]'); await W(3000);
   ok(p.M.CALLS.some(c => c.a === 'htMailBGH' && c.p.files && c.p.files.length === 1 && /\.docx$/.test(c.p.files[0].name)), 'gửi Ban giám hiệu kèm file Word (htMailBGH)');
   await p.context().close();
-  // giáo viên bộ môn: chỉ thấy môn mình dạy
-  p = await P({ as: 'gvtoan' }); await p.goto(U); await p.waitForSelector('#app.on'); await W(2500);
-  await p.evaluate(() => { const c = document.querySelector('#updOk'); c && c.click(); });
-  ok(await p.evaluate(() => S.view === 'ht' && navItems().length === 1), 'GVBM: chỉ mục Kết quả học tập');
-  ok(await p.evaluate(() => Array.from(document.querySelectorAll('#htMon option')).map(o => o.value).join() === 'TOAN'), 'GVBM: chỉ môn mình dạy');
+  // v6.4: không còn vai giáo viên bộ môn — chỉ GVCN và cán bộ lớp cập nhật điểm
+  p = await P({ as: 'gvcn' }); await p.goto(U); await p.waitForSelector('#app.on'); await W(2500);
+  await p.evaluate(() => { const c = document.querySelector('#updOk'); c && c.click(); go('ht'); }); await W(2500);
+  const gvTxt = async () => p.evaluate(() => document.querySelector('#vHT').innerText);
+  ok(!/bộ môn|GVBM/.test(await gvTxt()) && !(await p.$('#htAskGV')), 'v6.4: bảng điểm không còn giáo viên bộ môn / nhận xét GVBM');
+  ok(await p.evaluate(() => Array.from(document.querySelectorAll('[data-htt]')).map(b => b.textContent).indexOf('Môn học') >= 0), 'v6.4: thẻ "Môn học" (bỏ danh sách giáo viên)');
+  await p.click('[data-htt="mon"]'); await W(800);
+  ok(!/bộ môn/.test(await gvTxt()) && !(await p.$('#htGvT')), 'v6.4: thẻ Môn học không còn danh sách giáo viên bộ môn');
   await p.context().close();
 
   ok(errs.length === 0, 'không lỗi JavaScript' + (errs.length ? ': ' + errs.slice(0, 3).join(' | ') : ''));
