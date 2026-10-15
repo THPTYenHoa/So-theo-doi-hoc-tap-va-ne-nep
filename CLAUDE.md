@@ -258,3 +258,18 @@ MMH Report Hub / CRM (skill `gh-webapp-upgrader`). App dùng để dự thi "Nh�
   Backend: `accountsMap` không gọi `themGVBM_`; `htSaveGV` / `htMailGV` trả lỗi. App: `isGV()` luôn false, bỏ cột / nhập Excel "Nhận xét của GVBM" (NXGV), nút "Đề nghị GVBM nhập",
   danh sách giáo viên ở thẻ **Môn học**; PDF kết quả học tập chỉ còn nhận xét GVCN. Web demo bỏ vai "GV bộ môn (Toán)". Không thêm lại GVBM ở giao diện, hướng dẫn, video.
 
+## v6.5 — Trợ lý AI (khung chat + gợi ý; Gemini hoặc Claude)
+- **`ai.js` (`window.AI65`, nạp sau `kythi.js`)**: bọc `openRemark` ⇒ khung `.ai65` dưới `#rkNx` "Gợi ý nhận xét bằng AI" (nhận xét tháng + điểm mạnh / cần cố gắng / gợi ý cho cô, nút Hoàn tác);
+  bọc `renderBC` ⇒ "AI viết nhận xét chung & phương hướng" (điền `#bcNx` / `#bcPh` + `bcSave`). Chỉ GVCN. Số liệu gửi đi **ẩn danh** (`duLieuHS` / `duLieuLop`: không họ tên, mã HS, ghi chú tự do).
+- **Backend `AiTroLy.gs`** (yenhoa-backend): `aiTrangThai`, `aiGoiY` {loai: `nx_hs` | `bc_lop`, data} — máy chủ tự dựng câu hỏi + `output_config.format` json_schema, lọc khoá cá nhân (`aiSach_`),
+  giới hạn lượt/ngày (`AI_MAX_NGAY`, mặc định 300). Claude API `claude-opus-5-5` (đổi bằng thuộc tính `AI_MODEL`), effort `low`, `fallbacks:"default"`. Khoá `CLAUDE_API_KEY` trong
+  Thuộc tính tập lệnh (KHÔNG đưa vào repo / chat). Cần quyền UrlFetchApp: chủ script chạy `capQuyenAI` 1 lần (Deploy: `push_only` ⇒ cấp quyền ⇒ deploy).
+- **Khung chat `troly.js` (`window.TL`, nạp sau `ai.js`)**: nút **Trợ lý AI** `#tl-top` (trước `#hFind`) + nút tròn `#tl-fab` + Ctrl/⌘ J, chỉ GVCN. Câu hỏi gợi ý `TL.GOIY` (Nề nếp · Học tập · Soạn giúp cô).
+  Mỗi câu hỏi gửi `aiChat` {hoi, lichSu (≤10), duLieu} — `duLieu` = lớp, tổng hợp từng tháng (tổ, lỗi nhiều nhất, xếp loại), từng học sinh (điểm TB / xếp loại / lỗi theo tháng,
+  điểm tuần tháng đang xem, GK / CK, kỳ thi), kỳ thi. **Ẩn danh**: học sinh = mã tạm `E01…` theo thứ tự `activeStudents()`; tên trong câu hỏi đổi sang mã (`anDanh`, so khớp không dấu,
+  họ tên / tên đệm + tên / tên riêng nếu không trùng); câu trả lời đổi mã ⇒ tên bấm được (`.tl-hs` ⇒ `openProfile`). Lịch sử máy `localStorage.hk_tl_v1` (lượt AI giữ bản mã `c`).
+  Không đặt khoá `ten / ma / email / ghiChu` trong `duLieu` (máy chủ lọc bỏ); tên kỳ thi dùng `tenKy`. Mã `HSnn` KHÔNG dùng (trùng mã HS của bản demo).
+- **Backend `AiTroLy.gs`**: `aiGoi_` chung 2 nhà cung cấp — `GEMINI_API_KEY` (miễn phí, `gemini-3.8-flash`, tự tìm bản flash mới khi bị ngừng, `AI_MODEL_GEMINI`) hoặc `CLAUDE_API_KEY`; có cả hai ⇒ Gemini, `AI_PROVIDER` để chọn.
+  `apiAiChat` (câu lệnh hệ thống `AI_CHAT_HE_THONG`: chỉ dựa dữ liệu, viết mã E…, không nêu tên HS vi phạm trong tin nhắn chung). Giao diện / tài liệu gọi là **"Trợ lý AI"** (không ghi tên hãng).
+- Demo / mock: `htdemo.js` `chatMau()` (khung chat, trả lời từ đúng `duLieu` ẩn danh) + `aiMau()` soạn câu trả lời mẫu từ đúng số liệu ẩn danh (không gọi AI thật). `run.js` mục v6.5 kiểm không lộ tên / mã HS. Ảnh: `tools/demo/cap65.js`.
+- Video / hồ sơ dự thi: nêu rõ công cụ AI — Claude Code (xây dựng toàn bộ app + backend), "Trợ lý AI" trong app (Gemini miễn phí hoặc Claude API), ElevenLabs (giọng đọc video), Gemini (ảnh cô Thảo).
