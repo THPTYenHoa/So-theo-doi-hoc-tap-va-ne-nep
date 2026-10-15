@@ -275,3 +275,6 @@ MMH Report Hub / CRM (skill `gh-webapp-upgrader`). App dùng để dự thi "Nh�
 - Video / hồ sơ dự thi: nêu rõ công cụ AI — Claude Code (xây dựng toàn bộ app + backend), "Trợ lý AI" trong app (Gemini miễn phí hoặc Claude API), ElevenLabs (giọng đọc video), Gemini (ảnh cô Thảo).
 - **HDSD đầy đủ v6.5** (`docs/HDSD_Day_du.pdf`, 29 trang, giữ tên ⇒ mã QR cũ vẫn đúng): `tools/guide/cap65.js` (ảnh từ web demo, dữ liệu ảo ⇒ `shots65/`) → `tools/guide/build65.js`
   (4 phần: Bắt đầu · Giáo viên chủ nhiệm · Trợ lý AI · Cán bộ lớp & Cha mẹ HS; QR mở sổ / demo / tài liệu / trang cha mẹ). `build.js` cũ chỉ còn dựng 3 file theo vai (bản cũ).
+
+## Video giới thiệu (15/10/2026)
+- `video.html` + `video/gioi-thieu-vi.mp4` (bản tiếng Việt dưới 5 phút, dữ liệu ảo, faststart) + ảnh bìa `video/gioi-thieu-vi.jpg` — link công khai cho slide / poster / QR. Dựng lại video ⇒ chép đè cùng tên.
