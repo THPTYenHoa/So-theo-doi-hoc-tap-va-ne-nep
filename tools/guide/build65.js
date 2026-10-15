@@ -18,6 +18,9 @@ const CSS = CSS0 + `
 .ins img{display:block;width:100%}
 .ph{top:40px;height:640px}
 .ph2a{right:376px}
+.qrrow{position:absolute;right:70px;top:420px;display:flex;gap:28px;align-items:flex-start}
+.qrrow div{width:150px;text-align:center;font-size:12.5px;line-height:1.35;color:#5C7A83;font-weight:700}
+.qrrow img{width:150px;height:150px;border:1px solid #E3ECEE;border-radius:10px;background:#fff;display:block;margin:0 0 6px}
 .cover .chibi{width:300px;height:300px;top:80px;right:150px}
 .grp{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:10px}
 .grp .card b{font-size:15px}.grp .card span{font-size:13.5px}
@@ -32,7 +35,7 @@ function page(n, o) {
   if (o.cover) return `<section class="s cover">${ft(n)}<div class="txt"><div class="k">Hướng dẫn sử dụng · bản đầy đủ</div><h1>Sổ theo dõi<br>học tập và nề nếp</h1>
     <p class="lead" style="margin-top:14px;width:680px">${o.lead}</p><span class="who">Giáo viên chủ nhiệm · Cán bộ lớp · Cha mẹ học sinh</span></div>
     <img class="chibi" src="${chibi('chao')}"><div class="meta">Lớp 11D3 · THPT Yên Hòa · Năm học 2026 – 2027<br>Phiên bản ${VER} · có Trợ lý AI</div>
-    <div class="qr" style="right:300px"><img src="${qr('https://' + APP + '/')}">Mở sổ</div><div class="qr"><img src="${qr('https://' + APP + '/demo.html')}">Dùng thử bản demo<br>(mã 11D3Yenhoa)</div></section>`;
+    <div class="qrrow"><div><img src="${qr('https://' + APP + '/')}">Mở sổ</div><div><img src="${qr('https://' + APP + '/demo.html')}">Dùng thử bản demo<br>(mã 11D3Yenhoa)</div><div><img src="${qr('https://' + APP + '/docs/HDSD_Day_du.pdf')}">Tài liệu này</div></div></section>`;
   if (o.div) return `<section class="s div">${ft(n)}<div class="txt"><div class="k">${o.k}</div><h1>${o.h}</h1><p class="lead" style="margin-top:16px">${o.lead}</p></div></section>`;
   const right = o.wide ? `<div class="dk2"><img src="${img(o.wide)}"></div>${o.ins ? `<div class="ins"><img src="${img(o.ins)}"></div>` : ''}` :
     o.phones ? (o.phones[1] ? `<div class="ph ph2a"><img src="${img(o.phones[0])}"></div><div class="ph ph2b"><img src="${img(o.phones[1])}"></div>` : `<div class="ph ph1"><img src="${img(o.phones[0])}"></div>`) : '';
