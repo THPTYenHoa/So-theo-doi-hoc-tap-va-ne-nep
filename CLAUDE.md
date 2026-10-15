@@ -273,3 +273,5 @@ MMH Report Hub / CRM (skill `gh-webapp-upgrader`). App dùng để dự thi "Nh�
   `apiAiChat` (câu lệnh hệ thống `AI_CHAT_HE_THONG`: chỉ dựa dữ liệu, viết mã E…, không nêu tên HS vi phạm trong tin nhắn chung). Giao diện / tài liệu gọi là **"Trợ lý AI"** (không ghi tên hãng).
 - Demo / mock: `htdemo.js` `chatMau()` (khung chat, trả lời từ đúng `duLieu` ẩn danh) + `aiMau()` soạn câu trả lời mẫu từ đúng số liệu ẩn danh (không gọi AI thật). `run.js` mục v6.5 kiểm không lộ tên / mã HS. Ảnh: `tools/demo/cap65.js`.
 - Video / hồ sơ dự thi: nêu rõ công cụ AI — Claude Code (xây dựng toàn bộ app + backend), "Trợ lý AI" trong app (Gemini miễn phí hoặc Claude API), ElevenLabs (giọng đọc video), Gemini (ảnh cô Thảo).
+- **HDSD đầy đủ v6.5** (`docs/HDSD_Day_du.pdf`, 29 trang, giữ tên ⇒ mã QR cũ vẫn đúng): `tools/guide/cap65.js` (ảnh từ web demo, dữ liệu ảo ⇒ `shots65/`) → `tools/guide/build65.js`
+  (4 phần: Bắt đầu · Giáo viên chủ nhiệm · Trợ lý AI · Cán bộ lớp & Cha mẹ HS; QR mở sổ / demo / tài liệu / trang cha mẹ). `build.js` cũ chỉ còn dựng 3 file theo vai (bản cũ).
