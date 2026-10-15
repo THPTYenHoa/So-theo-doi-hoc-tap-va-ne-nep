@@ -269,7 +269,7 @@ MMH Report Hub / CRM (skill `gh-webapp-upgrader`). App dùng để dự thi "Nh�
   điểm tuần tháng đang xem, GK / CK, kỳ thi), kỳ thi. **Ẩn danh**: học sinh = mã tạm `E01…` theo thứ tự `activeStudents()`; tên trong câu hỏi đổi sang mã (`anDanh`, so khớp không dấu,
   họ tên / tên đệm + tên / tên riêng nếu không trùng); câu trả lời đổi mã ⇒ tên bấm được (`.tl-hs` ⇒ `openProfile`). Lịch sử máy `localStorage.hk_tl_v1` (lượt AI giữ bản mã `c`).
   Không đặt khoá `ten / ma / email / ghiChu` trong `duLieu` (máy chủ lọc bỏ); tên kỳ thi dùng `tenKy`. Mã `HSnn` KHÔNG dùng (trùng mã HS của bản demo).
-- **Backend `AiTroLy.gs`**: `aiGoi_` chung 2 nhà cung cấp — `GEMINI_API_KEY` (miễn phí, `gemini-2.5-flash`, `AI_MODEL_GEMINI`) hoặc `CLAUDE_API_KEY`; có cả hai ⇒ Gemini, `AI_PROVIDER` để chọn.
+- **Backend `AiTroLy.gs`**: `aiGoi_` chung 2 nhà cung cấp — `GEMINI_API_KEY` (miễn phí, `gemini-3.8-flash`, tự tìm bản flash mới khi bị ngừng, `AI_MODEL_GEMINI`) hoặc `CLAUDE_API_KEY`; có cả hai ⇒ Gemini, `AI_PROVIDER` để chọn.
   `apiAiChat` (câu lệnh hệ thống `AI_CHAT_HE_THONG`: chỉ dựa dữ liệu, viết mã E…, không nêu tên HS vi phạm trong tin nhắn chung). Giao diện / tài liệu gọi là **"Trợ lý AI"** (không ghi tên hãng).
 - Demo / mock: `htdemo.js` `chatMau()` (khung chat, trả lời từ đúng `duLieu` ẩn danh) + `aiMau()` soạn câu trả lời mẫu từ đúng số liệu ẩn danh (không gọi AI thật). `run.js` mục v6.5 kiểm không lộ tên / mã HS. Ảnh: `tools/demo/cap65.js`.
 - Video / hồ sơ dự thi: nêu rõ công cụ AI — Claude Code (xây dựng toàn bộ app + backend), "Trợ lý AI" trong app (Gemini miễn phí hoặc Claude API), ElevenLabs (giọng đọc video), Gemini (ảnh cô Thảo).
