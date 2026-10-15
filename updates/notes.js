@@ -1,10 +1,14 @@
 /* Thông báo cập nhật — Sổ hạnh kiểm 11D3. Mục mới thêm lên ĐẦU mảng (xem CLAUDE.md). */
 window.HK_UPDATES = [
   {
-    id: "2026-10-14-v6.5", version: "6.5", date: "2026-10-14",
-    title: "Trợ lý AI: gợi ý nhận xét học sinh và viết báo cáo thi đua",
-    summary: "Sổ có thêm trợ lý AI (Claude) giúp giáo viên chủ nhiệm soạn nhanh lời nhận xét từng học sinh và phần nhận xét chung, phương hướng của báo cáo thi đua. Số liệu gửi cho AI đã ẩn danh; cô luôn đọc, sửa rồi mới lưu.",
+    id: "2026-10-15-v6.5", version: "6.5", date: "2026-10-15",
+    title: "Trợ lý AI: hỏi đáp về lớp, gợi ý nhận xét, viết báo cáo",
+    summary: "Sổ có thêm Trợ lý AI: cô hỏi bằng lời thường về nề nếp, điểm số, thi đua của lớp và nhận câu trả lời ngay, kèm gợi ý nhận xét từng học sinh và phần nhận xét chung của báo cáo thi đua. Tên học sinh được đổi sang mã trước khi gửi cho AI; câu trả lời chỉ là gợi ý, cô kiểm tra lại trước khi dùng.",
     items: [
+      { type: "new", title: "Khung chat Trợ lý AI",
+        text: "Bấm <b>Trợ lý AI</b> trên thanh trên cùng (hoặc nút tròn góc phải, phím <b>Ctrl + J</b>) ▸ chọn một câu hỏi gợi ý hoặc gõ tự do, ví dụ \"Tháng này em nào cần quan tâm?\", \"So sánh thi đua các tổ\", \"Soạn tin nhắn Zalo cho nhóm cha mẹ\". Trợ lý đọc số liệu của sổ để trả lời; bấm tên học sinh trong câu trả lời để mở hồ sơ.", img: "updates/v6.5/tro-ly-chat.jpg" },
+      { type: "new", title: "Câu hỏi gợi ý theo chủ đề",
+        text: "Mở Trợ lý AI ▸ các câu hỏi mẫu chia theo <b>Nề nếp</b>, <b>Học tập</b>, <b>Soạn giúp cô</b> — bấm là hỏi ngay. Nút <b>⟲</b> bắt đầu cuộc trò chuyện mới, <b>Sao chép</b> để dán câu trả lời vào Zalo / Word.", img: "updates/v6.5/tro-ly-goi-y.jpg" },
       { type: "new", title: "Gợi ý nhận xét học sinh bằng AI",
         text: "Mở <b>Nhận xét</b> của một học sinh ▸ bấm <b>Gợi ý nhận xét bằng AI</b>: AI đọc nề nếp, điểm tuần, điểm kiểm tra, kỳ thi của em trong tháng rồi viết lời nhận xét, kèm điểm mạnh, điều cần cố gắng và gợi ý cho cô. Cô sửa lại rồi bấm <b>Lưu nhận xét</b>; có nút <b>Hoàn tác</b>.", img: "updates/v6.5/nhan-xet-hs.jpg" },
       { type: "new", title: "AI viết nhận xét chung & phương hướng cho báo cáo",

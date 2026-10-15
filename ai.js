@@ -1,4 +1,4 @@
-/* v6.5 — TRỢ LÝ AI (window.AI65): Claude gợi ý nhận xét học sinh + lời văn báo cáo lớp. Backend: aiTrangThai · aiGoiY (AiTroLy.gs, yenhoa-backend).
+/* v6.5 — TRỢ LÝ AI (window.AI65): gợi ý nhận xét học sinh + lời văn báo cáo lớp. Backend: aiTrangThai · aiGoiY (AiTroLy.gs, yenhoa-backend).
    · Chỉ GVCN. Số liệu gửi đi ĐÃ ẨN DANH: không họ tên, không mã HS, không ghi chú tự do — chỉ con số, nội dung lỗi / khen theo danh mục, điểm theo môn.
    · Kết quả là GỢI Ý: điền vào ô nhận xét (có Hoàn tác), GVCN đọc, sửa rồi mới bấm Lưu như cũ.
    · Chỗ dùng: Nhận xét tháng của 1 học sinh (openRemark ▸ #rkNx) · Báo cáo thi đua (renderBC ▸ #bcNx, #bcPh). */
@@ -18,7 +18,7 @@
   document.head.appendChild(css);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const r1 = x => Math.round(x * 10) / 10;
-  const NOTE = 'Gợi ý của <b>trợ lý AI (Claude)</b>. Số liệu gửi đi đã ẩn danh (không họ tên). Cô đọc, sửa cho đúng rồi mới lưu.';
+  const NOTE = 'Gợi ý của <b>Trợ lý AI</b>. Số liệu gửi đi đã ẩn danh (không họ tên). Cô đọc, sửa cho đúng rồi mới lưu.';
 
   async function goi(loai, data) {
     const j = await rawApi('aiGoiY', { loai, data }, 90000);
