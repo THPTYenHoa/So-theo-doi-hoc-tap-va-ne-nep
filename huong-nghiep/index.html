@@ -53,6 +53,9 @@ textarea{min-height:140px;resize:vertical}
 .dot{width:9px;height:9px;border-radius:50%;background:var(--rec);display:inline-block;margin-right:4px;animation:bl 1s infinite}
 @keyframes bl{50%{opacity:.25}}
 .err{color:var(--err);font-size:14px;margin:10px 0 0}
+.need{display:none;color:var(--err);font-size:13.5px;font-weight:600;margin:8px 0 0}
+.card.bad .need{display:block}
+.chrome{font-size:13px;color:var(--pri2);background:var(--soft);border-radius:8px;padding:8px 10px;margin:10px 0 0}
 .hp{position:absolute;left:-5000px;width:1px;height:1px;overflow:hidden}
 .ov{position:fixed;inset:0;background:rgba(18,50,74,.45);display:flex;align-items:flex-end;justify-content:center;z-index:9;padding:0}
 .sheet{background:#fff;width:100%;max-width:640px;border-radius:16px 16px 0 0;padding:18px 16px calc(16px + env(safe-area-inset-bottom));max-height:88vh;overflow:auto}
@@ -106,17 +109,19 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
       '<section class="card" id="cVai"><h2><span class="n">1</span>Bạn là</h2><div class="vai">' +
         '<button type="button" class="opt" data-vai="hs" aria-pressed="' + (st.vai === 'hs') + '">Học sinh<span>khối 11</span></button>' +
         '<button type="button" class="opt" data-vai="ph" aria-pressed="' + (st.vai === 'ph') + '">Cha mẹ học sinh<span>phụ huynh học sinh khối 11</span></button>' +
-      '</div></section>' +
+      '</div><div class="need">Bắt buộc: hãy chọn Học sinh hoặc Cha mẹ học sinh.</div></section>' +
       '<section class="card" id="cLop"><h2><span class="n">2</span>Lớp <small id="lopNote">' + (ph() ? '(lớp của con)' : '') + '</small></h2>' +
         '<div class="lopg">Ban A</div><div class="lop">' + LOP_A.map(lb).join('') + '</div>' +
-        '<div class="lopg">Ban D</div><div class="lop">' + LOP_D.map(lb).join('') + '</div></section>' +
+        '<div class="lopg">Ban D</div><div class="lop">' + LOP_D.map(lb).join('') + '</div><div class="need">Bắt buộc: hãy chọn lớp.</div></section>' +
       '<section class="card"><h2><span class="n">3</span>Chủ đề <small>(không bắt buộc, chọn được nhiều)</small></h2><div class="cd">' +
         CHUDE.map(function (c) { return '<button type="button" class="opt" data-cd="' + esc(c) + '" aria-pressed="' + (st.chude.indexOf(c) >= 0) + '">' + esc(c) + '</button>'; }).join('') +
       '</div></section>' +
       '<section class="card" id="cHoi"><h2><span class="n">4</span>Câu hỏi</h2>' +
         '<textarea id="hoi" maxlength="3000" placeholder="Viết câu hỏi gửi ban tư vấn…">' + esc(st.hoi) + '</textarea>' +
         '<div class="row"><button type="button" class="btn" id="bNoi">' + MIC + '<span>Nói để viết</span></button></div>' +
-        '<div class="hint" id="hNoi">Gõ chữ như bình thường, hoặc bấm <b>Nói để viết</b> (hay biểu tượng micro trên bàn phím điện thoại) rồi nói.</div>' +
+        '<div class="need">Bắt buộc: hãy viết hoặc nói câu hỏi.</div>' +
+        '<div class="hint" id="hNoi">Gõ chữ như bình thường, hoặc bấm <b>Nói để viết</b> rồi nói.</div>' +
+        '<div class="chrome">Lưu ý: để dùng <b>Nói để viết</b>, hãy mở link bằng trình duyệt <b>Chrome</b>. Trên iPhone có thể bấm biểu tượng micro trên bàn phím để nói.</div>' +
         '<label class="f" for="ten" style="margin-top:14px">Họ tên <small>(không bắt buộc — có thể để trống)</small></label>' +
         '<input type="text" id="ten" maxlength="80" autocomplete="name" value="' + esc(st.ten) + '">' +
         '<div class="hp" aria-hidden="true"><input type="text" id="web" tabindex="-1" autocomplete="off"></div>' +
@@ -183,16 +188,19 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
   }
 
   /* ---------- Kiểm tra ⇒ xác nhận ⇒ gửi ---------- */
-  function bad(id, msg) {
-    var c = $(id); c.classList.add('bad'); $('#err').textContent = msg;
-    c.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
   function kiem() {
     if (rec) rec.stop();
     st.hoi = $('#hoi').value.trim(); st.ten = $('#ten').value.trim();
-    if (!st.vai) return bad('#cVai', 'Hãy chọn: Học sinh hoặc Cha mẹ học sinh.');
-    if (!st.lop) return bad('#cLop', 'Hãy chọn lớp.');
-    if (st.hoi.length < 3) return bad('#cHoi', 'Hãy viết hoặc nói câu hỏi.');
+    var miss = [];
+    [['#cVai', !st.vai, 'Bạn là'], ['#cLop', !st.lop, 'Lớp'], ['#cHoi', st.hoi.length < 3, 'Câu hỏi']].forEach(function (c) {
+      $(c[0]).classList.toggle('bad', c[1]); if (c[1]) miss.push(c);
+    });
+    if (miss.length) {
+      $('#err').textContent = 'Còn thiếu: ' + miss.map(function (c) { return c[2]; }).join(', ') + ' — hãy điền đủ trước khi gửi.';
+      $(miss[0][0]).scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    $('#err').textContent = '';
     var x = ph() ? 'bác' : 'em';
     var ov = document.createElement('div'); ov.className = 'ov';
     ov.innerHTML = '<div class="sheet" role="dialog" aria-modal="true"><h3>Xác nhận trước khi gửi</h3>' +
