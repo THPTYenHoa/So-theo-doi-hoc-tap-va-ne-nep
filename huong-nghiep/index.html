@@ -74,6 +74,13 @@ textarea{min-height:140px;resize:vertical}
 .st.ok{color:var(--ok)}
 footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
 @media (max-width:420px){.lop{grid-template-columns:repeat(4,1fr)}h1{font-size:19px}}
+.taw{position:relative}
+.taw textarea{padding-right:52px;display:block;resize:none}
+.micb{position:absolute;right:8px;bottom:8px;width:38px;height:38px;border-radius:50%;border:1.5px solid var(--fld);background:#fff;color:var(--pri);display:flex;align-items:center;justify-content:center;padding:0}
+.micb svg{width:19px;height:19px}
+.micb.on{background:var(--rec);border-color:var(--rec);color:#fff;animation:pu 1.3s infinite}
+@keyframes pu{0%{box-shadow:0 0 0 0 rgba(192,57,43,.45)}70%{box-shadow:0 0 0 10px rgba(192,57,43,0)}100%{box-shadow:0 0 0 0 rgba(192,57,43,0)}}
+.hint:empty{display:none}
 </style>
 </head>
 <body>
@@ -117,11 +124,10 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
         CHUDE.map(function (c) { return '<button type="button" class="opt" data-cd="' + esc(c) + '" aria-pressed="' + (st.chude.indexOf(c) >= 0) + '">' + esc(c) + '</button>'; }).join('') +
       '</div></section>' +
       '<section class="card" id="cHoi"><h2><span class="n">4</span>Câu hỏi</h2>' +
-        '<textarea id="hoi" maxlength="3000" placeholder="Viết câu hỏi gửi ban tư vấn…">' + esc(st.hoi) + '</textarea>' +
-        '<div class="row"><button type="button" class="btn" id="bNoi">' + MIC + '<span>Nói để viết</span></button></div>' +
+        '<div class="taw"><textarea id="hoi" maxlength="3000" placeholder="Viết câu hỏi gửi ban tư vấn…">' + esc(st.hoi) + '</textarea>' +
+          '<button type="button" class="micb" id="bNoi" aria-label="Nói để nhập chữ" title="Nói để nhập chữ">' + MIC + '</button></div>' +
         '<div class="need">Bắt buộc: hãy viết hoặc nói câu hỏi.</div>' +
-        '<div class="hint" id="hNoi">Gõ chữ như bình thường, hoặc bấm <b>Nói để viết</b> rồi nói.</div>' +
-        '<div class="chrome">Lưu ý: để dùng <b>Nói để viết</b>, hãy mở link bằng trình duyệt <b>Chrome</b>. Trên iPhone có thể bấm biểu tượng micro trên bàn phím để nói.</div>' +
+        '<div class="hint" id="hNoi"></div>' +
         '<label class="f" for="ten" style="margin-top:14px">Họ tên <small>(không bắt buộc — có thể để trống)</small></label>' +
         '<input type="text" id="ten" maxlength="80" autocomplete="name" value="' + esc(st.ten) + '">' +
         '<div class="hp" aria-hidden="true"><input type="text" id="web" tabindex="-1" autocomplete="off"></div>' +
@@ -155,8 +161,8 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
   /* ---------- Nói để viết: nhận giọng nói ngay trên điện thoại (không qua máy chủ) ---------- */
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition, rec = null;
   function hint(h, live) { var x = $('#hNoi'); x.innerHTML = h; x.classList.toggle('live', !!live); }
-  function btnNoi(on) { $('#bNoi').classList.toggle('on', on); $('#bNoi').innerHTML = (on ? STOP : MIC) + '<span>' + (on ? 'Dừng nói' : 'Nói để viết') + '</span>'; }
-  var KB = 'Hãy bấm <b>biểu tượng micro trên bàn phím</b> điện thoại (cạnh phím cách) rồi nói — chữ sẽ hiện vào ô.';
+  function btnNoi(on) { var b = $('#bNoi'); b.classList.toggle('on', on); b.innerHTML = on ? STOP : MIC; b.setAttribute('aria-label', on ? 'Dừng nói' : 'Nói để nhập chữ'); }
+  var KB = 'Máy này chưa dùng được micro trên trang. Hãy bấm <b>biểu tượng micro trên bàn phím</b> điện thoại (cạnh phím cách) rồi nói, hoặc mở link bằng Chrome.';
   function noi() {
     if (rec) { rec.stop(); return; }
     var ta = $('#hoi');
@@ -174,17 +180,16 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
       ta.value = base + fin + tmp; st.hoi = ta.value; st.cach = base ? 'gonoi' : 'noi'; $('#cHoi').classList.remove('bad');
     };
     rec.onerror = function (ev) {
-      if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed' || ev.error === 'audio-capture') { ta.focus(); hint('Chưa dùng được micro cho trang này. ' + KB, false); }
-      else if (ev.error === 'no-speech') hint('Chưa nghe thấy tiếng — bấm <b>Nói để viết</b> và nói lại nhé.', false);
+      if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed' || ev.error === 'audio-capture') { ta.focus(); hint(KB, false); }
+      else if (ev.error === 'no-speech') hint('Chưa nghe thấy tiếng — bấm biểu tượng micro và nói lại nhé.', false);
       else if (ev.error === 'network') hint('Mạng yếu nên chưa nhận được giọng nói. ' + KB, false);
     };
     rec.onend = function () {
       rec = null; btnNoi(false);
       ta.value = ta.value.replace(/\s+$/, ''); st.hoi = ta.value;
-      if ($('#hNoi').classList.contains('live')) hint('Đã dừng. Đọc lại và sửa chữ nếu cần; bấm <b>Nói để viết</b> để nói tiếp.', false);
     };
     try { rec.start(); } catch (e) { rec = null; ta.focus(); hint(KB, false); return; }
-    btnNoi(true); hint('<span class="dot"></span>Đang nghe… nói xong bấm <b>Dừng nói</b>.', true);
+    btnNoi(true); hint('', false);
   }
 
   /* ---------- Kiểm tra ⇒ xác nhận ⇒ gửi ---------- */
