@@ -57,3 +57,4 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
 .choose a{display:block;text-decoration:none;color:var(--ink);background:#fff;border:1.5px solid var(--fld);border-radius:14px;padding:18px;font-weight:600;font-size:17px}
 .choose a span{display:block;font-weight:400;font-size:14px;color:var(--mut)}
 @media (max-width:420px){ .lop{grid-template-columns:repeat(4,1fr)} header.top h1{font-size:19px} }
+label.f small{font-size:13px}
