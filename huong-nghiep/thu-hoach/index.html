@@ -83,7 +83,7 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
 .list{display:grid;gap:8px}
 .list .opt{padding:11px 12px;text-align:left}
 .list .opt small{color:var(--mut);font-weight:400}
-.ta{min-height:88px}
+.ta{min-height:84px}
 .cd.ng{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .cd.ng .opt b{color:var(--pri2)}
 .cd.ng .opt{border-radius:10px;padding:8px 9px;font-size:13.5px;line-height:1.3;text-align:left}
@@ -93,6 +93,13 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
 .qi .need2{display:none;color:var(--err);font-size:13px;font-weight:600;margin:6px 0 0}
 .qi.bad .need2{display:block}
 .cf ul{margin:4px 0 0;padding-left:20px}
+.taw{position:relative}
+.taw textarea{padding-right:52px;display:block;resize:none}
+.micb{position:absolute;right:8px;bottom:8px;width:38px;height:38px;border-radius:50%;border:1.5px solid var(--fld);background:#fff;color:var(--pri);display:flex;align-items:center;justify-content:center;padding:0}
+.micb svg{width:19px;height:19px}
+.micb.on{background:var(--rec);border-color:var(--rec);color:#fff;animation:pu 1.3s infinite}
+@keyframes pu{0%{box-shadow:0 0 0 0 rgba(192,57,43,.45)}70%{box-shadow:0 0 0 10px rgba(192,57,43,0)}100%{box-shadow:0 0 0 0 rgba(192,57,43,0)}}
+.hint:empty{display:none}
 </style>
 </head>
 <body>
@@ -133,15 +140,15 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function opt(attr, v, on, txt) { return '<button type="button" class="opt" data-' + attr + '="' + esc(v) + '" aria-pressed="' + on + '">' + (txt || esc(v)) + '</button>'; }
   function ta(id, ph) {
-    return '<textarea class="ta" id="' + id + '" maxlength="3000" placeholder="' + esc(ph) + '">' + esc(st[id]) + '</textarea>' +
-      '<button type="button" class="btn mic" data-mic="' + id + '">' + MIC + '<span>Nói để viết</span></button>';
+    return '<div class="taw"><textarea class="ta" id="' + id + '" maxlength="3000" placeholder="' + esc(ph) + '">' + esc(st[id]) + '</textarea>' +
+      '<button type="button" class="micb" data-mic="' + id + '" aria-label="Nói để nhập chữ" title="Nói để nhập chữ">' + MIC + '</button></div>';
   }
   function req(t) { return t + ' <b>*</b>'; }
 
   function form() {
     var lb = function (l) { return opt('lop', l, st.lop === l); };
     app.innerHTML =
-      '<p class="intro">Ngày hội Tư vấn hướng nghiệp (thứ Bảy 28/11/2026). Hạn nộp: <b>03/12/2026</b>. Mục có dấu <b style="color:var(--err)">*</b> là bắt buộc · ô viết có nút <b>Nói để viết</b>.</p>' +
+      '<p class="intro">Ngày hội Tư vấn hướng nghiệp (thứ Bảy 28/11/2026). Hạn nộp: <b>03/12/2026</b>. Mục có dấu <b style="color:var(--err)">*</b> là bắt buộc.</p>' +
       '<section class="card" id="cTT"><h2><span class="n">1</span>Thông tin học sinh</h2>' +
         '<div class="qi" id="qTen"><label class="f" for="ten">' + req('Họ và tên') + '</label>' +
           '<input type="text" id="ten" maxlength="80" autocomplete="name" placeholder="Ví dụ: Nguyễn Minh An" value="' + esc(st.ten) + '">' +
@@ -167,7 +174,6 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
           return '<div class="qi" id="q' + t[0] + '"><label class="f" for="' + t[0] + '">' + (t[3] ? req(esc(t[1])) : esc(t[1]) + ' <small>(không bắt buộc)</small>') + '</label>' +
             ta(t[0], t[2]) + '<div class="need2">Bắt buộc: hãy viết vài câu.</div></div>';
         }).join('') +
-        '<div class="chrome">Lưu ý: để dùng <b>Nói để viết</b>, hãy mở link bằng trình duyệt <b>Chrome</b>. Trên iPhone có thể bấm biểu tượng micro trên bàn phím để nói.</div>' +
       '</section>' +
       '<section class="card"><h2><span class="n">5</span>Định hướng của em</h2>' +
         '<div class="qi" id="qDh"><div class="f">' + req('Sau Ngày hội, định hướng nghề nghiệp của em') + '</div><div class="list">' +
@@ -184,7 +190,7 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
         '<div class="qi" id="qke"><label class="f" for="ke">' + req('Kế hoạch tiếp theo của em (học tập, rèn luyện, tìm hiểu thêm…) để chuẩn bị cho nghề nghiệp tương lai') + '</label>' +
           ta('ke', 'Ví dụ: Tập trung học tốt Toán, Lý, Anh; tìm hiểu điểm chuẩn ngành … ở trường …') + '<div class="need2">Bắt buộc: hãy viết vài câu.</div></div>' +
       '</section>' +
-      '<section class="card"><h2><span class="n">6</span>Câu hỏi và góp ý cho nhà trường <small>(không bắt buộc)</small></h2>' +
+      '<section class="card"><h2><span class="n">6</span>Câu hỏi và góp ý cho buổi hoạt động hướng nghiệp <small>(không bắt buộc)</small></h2>' +
         ta('gopy', 'Điều em còn băn khoăn về ngành nghề cần được giải đáp; nội dung, hoạt động em muốn có thêm ở các buổi hướng nghiệp sau…') +
         '<div class="hp" aria-hidden="true"><input type="text" id="web" tabindex="-1" autocomplete="off"></div>' +
       '</section>' +
@@ -225,8 +231,8 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
 
   /* ---------- Nói để viết (giọng nói của trình duyệt) ---------- */
   var SR = window.SpeechRecognition || window.webkitSpeechRecognition, rec = null, recBtn = null;
-  var KB = 'Hãy bấm biểu tượng micro trên bàn phím điện thoại rồi nói, hoặc mở link bằng Chrome.';
-  function btnSet(b, on) { b.classList.toggle('on', on); b.innerHTML = (on ? STOP : MIC) + '<span>' + (on ? 'Dừng nói' : 'Nói để viết') + '</span>'; }
+  var KB = 'Máy này chưa dùng được micro trên trang. Hãy bấm biểu tượng micro trên bàn phím điện thoại (cạnh phím cách) rồi nói, hoặc mở link bằng Chrome.';
+  function btnSet(b, on) { b.classList.toggle('on', on); b.innerHTML = on ? STOP : MIC; b.setAttribute('aria-label', on ? 'Dừng nói' : 'Nói để nhập chữ'); }
   function noi(b) {
     var id = b.getAttribute('data-mic'), t = $('#' + id);
     if (rec) { var same = recBtn === b; rec.stop(); if (same) return; }
@@ -241,7 +247,7 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
       }
       t.value = base + fin + tmp; st[id] = t.value; clearBad('#q' + id);
     };
-    rec.onerror = function (ev) { if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed' || ev.error === 'audio-capture' || ev.error === 'network') { t.focus(); toast('Chưa dùng được micro. ' + KB); } };
+    rec.onerror = function (ev) { if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed' || ev.error === 'audio-capture' || ev.error === 'network') { t.focus(); toast(KB); } };
     rec.onend = function () { btnSet(b, false); t.value = t.value.replace(/\s+$/, ''); st[id] = t.value; rec = null; recBtn = null; };
     try { rec.start(); } catch (e) { rec = null; recBtn = null; t.focus(); toast(KB); return; }
     btnSet(b, true);
