@@ -73,7 +73,7 @@ textarea{min-height:140px;resize:vertical}
 .st{font-size:13px;color:var(--mut);margin:0 0 14px}
 .st.ok{color:var(--ok)}
 footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
-@media (max-width:420px){.lop{grid-template-columns:repeat(4,1fr)}h1{font-size:19px}}
+@media (max-width:420px){h1{font-size:19px}.lop{gap:6px}.lop .opt{font-size:14px;padding:10px 0}}
 .rate{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
 .rate .opt{padding:10px 0;font-weight:700;font-size:16px}
 .scale{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin:4px 2px 0}
@@ -82,7 +82,10 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
 .qi .f b{color:var(--err);font-weight:600}
 .list{display:grid;gap:8px}
 .list .opt{padding:11px 12px;text-align:left}
-.ta{min-height:96px}
+.list .opt small{color:var(--mut);font-weight:400}
+.ta{min-height:88px}
+.cd.ng{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.cd.ng .opt{border-radius:10px;padding:8px 9px;font-size:13.5px;line-height:1.3;text-align:left}
 .mic{margin:8px 0 0;padding:8px 12px;font-size:14px}
 .mic svg{width:18px;height:18px}
 .qi.bad .f{color:var(--err)}
@@ -104,12 +107,14 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
   var GAS = 'https://script.google.com/macros/s/AKfycbz1x-UG4_Rk3M3_APc-hJ0VHns2GfvPtR6T_F8nl4KlEHnNsiYGMbY0Vc4moiIRy8gO/exec';
   var LOP_A = ['11A1','11A2','11A3','11A4','11A5','11A6','11A7','11A8','11A9','11A10'];
   var LOP_D = ['11D1','11D2','11D3','11D4','11D5','11D6','11D7'];
-  var HD = ['Nghe diễn giả chia sẻ định hướng nghề nghiệp','Trải nghiệm nghề Pha chế, làm bánh','Trải nghiệm nghề Làm đẹp','Tham quan gian hàng các đơn vị tư vấn'];
-  var RATE = [['r1','Ngày hội bổ ích với em ở mức nào?'],['r2','Phần chia sẻ của diễn giả về định hướng nghề nghiệp, chọn ngành, chọn trường'],
-              ['r3','Hoạt động trải nghiệm nghề / tham quan gian hàng'],['r4','Sau buổi, em hiểu rõ hơn về ngành nghề, điều kiện tuyển sinh, cơ hội việc làm']];
+  var HD = ['Hoạt náo đầu giờ với thông điệp “Hướng nghiệp và Phân luồng”','Nghe diễn giả chia sẻ về định hướng nghề nghiệp, chọn ngành, chọn trường',
+            'Trải nghiệm nghề Pha chế, làm bánh','Trải nghiệm nghề Làm đẹp','Tham quan, tìm hiểu các gian hàng của các đơn vị'];
+  var HD_NOTE = { 'Trải nghiệm nghề Pha chế, làm bánh': 'học sinh đã đăng ký', 'Trải nghiệm nghề Làm đẹp': 'học sinh đã đăng ký' };
+  var RATE = [['r1','Mức độ bổ ích chung của Ngày hội'],['r2','Phần chia sẻ của diễn giả về định hướng nghề nghiệp, chọn ngành, chọn trường'],
+              ['r3','Hoạt động trải nghiệm nghề / tham quan gian hàng'],['r4','Sau Ngày hội, em hiểu rõ hơn về ngành nghề, điều kiện tuyển sinh, cơ hội việc làm']];
   var TXT = [['tam','Điều em tâm đắc, ấn tượng nhất sau Ngày hội', 'Ví dụ: Lời khuyên của diễn giả về việc chọn ngành theo năng lực, không chạy theo số đông…', 1],
-             ['tin','Những thông tin mới em thu nhận được về ngành nghề, trường học, điều kiện tuyển sinh', 'Ví dụ: Ngành … cần tổ hợp …, học ở trường …, cơ hội việc làm …', 1],
-             ['ky','Kỹ năng / trải nghiệm thực tế em học được ở khu trải nghiệm nghề hoặc gian hàng', 'Ví dụ: Biết các bước pha một ly cà phê, hiểu nghề làm đẹp cần sự tỉ mỉ…', 0]];
+             ['tin','Những thông tin mới em thu nhận được về ngành nghề, trường đào tạo, điều kiện tuyển sinh và cơ hội việc làm', 'Ví dụ: Ngành … cần tổ hợp …, học ở trường …, cơ hội việc làm …', 1],
+             ['ky','Kỹ năng, trải nghiệm thực tế em học được ở khu trải nghiệm nghề / gian hàng', 'Ví dụ: Biết các bước pha một ly cà phê, hiểu nghề làm đẹp cần sự tỉ mỉ…', 0]];
   var DH = ['Đã xác định rõ ngành nghề mình muốn theo','Đã có vài lựa chọn, cần tìm hiểu thêm','Vẫn chưa xác định được'];
   var NGANH = ['Y – Dược – Sức khỏe','Kỹ thuật – Công nghệ – CNTT','Kinh tế – Tài chính – Quản trị','Ngôn ngữ – Quan hệ quốc tế – Du lịch',
                'Sư phạm – Giáo dục','Luật – Công an – Quân đội','Báo chí – Truyền thông – Marketing','Nghệ thuật – Thiết kế – Kiến trúc',
@@ -119,7 +124,7 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
   var STOP = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="7" y="7" width="10" height="10" rx="2"/></svg>';
   var OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 
-  var st = { ten: '', lop: '', hd: [], r1: 0, r2: 0, r3: 0, r4: 0, tam: '', tin: '', ky: '', dh: '', nganh: [], nganhKhac: '', ke: '', gopy: '' };
+  var st = { ten: '', lop: '', hd: [], r1: 0, r2: 0, r3: 0, r4: 0, tam: '', tin: '', ky: '', dh: '', nganh: [], nganhKhac: '', dinh: '', ke: '', gopy: '' };
   var app = document.getElementById('app');
   function $(s) { return document.querySelector(s); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -133,7 +138,7 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
   function form() {
     var lb = function (l) { return opt('lop', l, st.lop === l); };
     app.innerHTML =
-      '<p class="intro">Sau Ngày hội Tư vấn hướng nghiệp (thứ Bảy 28/11/2026), mỗi học sinh khối 11 hoàn thành phiếu này. Mục có dấu <b style="color:var(--err)">*</b> là bắt buộc.</p>' +
+      '<p class="intro">Ngày hội Tư vấn hướng nghiệp (thứ Bảy 28/11/2026). Hạn nộp: <b>03/12/2026</b>. Mục có dấu <b style="color:var(--err)">*</b> là bắt buộc · ô viết có nút <b>Nói để viết</b>.</p>' +
       '<section class="card" id="cTT"><h2><span class="n">1</span>Thông tin học sinh</h2>' +
         '<div class="qi" id="qTen"><label class="f" for="ten">' + req('Họ và tên') + '</label>' +
           '<input type="text" id="ten" maxlength="80" autocomplete="name" placeholder="Ví dụ: Nguyễn Minh An" value="' + esc(st.ten) + '">' +
@@ -145,13 +150,13 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
       '</section>' +
       '<section class="card"><h2><span class="n">2</span>Hoạt động em đã tham gia</h2>' +
         '<div class="qi" id="qHd"><div class="f">' + req('Chọn tất cả hoạt động em đã tham gia') + '</div><div class="list">' +
-          HD.map(function (h) { return opt('hd', h, st.hd.indexOf(h) >= 0); }).join('') + '</div><div class="need2">Bắt buộc: chọn ít nhất 1 hoạt động.</div></div>' +
+          HD.map(function (h) { return opt('hd', h, st.hd.indexOf(h) >= 0, esc(h) + (HD_NOTE[h] ? ' <small>(' + HD_NOTE[h] + ')</small>' : '')); }).join('') + '</div><div class="need2">Bắt buộc: chọn ít nhất 1 hoạt động.</div></div>' +
       '</section>' +
-      '<section class="card"><h2><span class="n">3</span>Đánh giá <small>(1 = không bổ ích · 5 = rất bổ ích)</small></h2>' +
+      '<section class="card"><h2><span class="n">3</span>Đánh giá Ngày hội</h2><p class="hint" style="margin:-4px 0 12px">1 = không bổ ích · 2 = ít bổ ích · 3 = bình thường · 4 = bổ ích · 5 = rất bổ ích</p>' +
         RATE.map(function (r) {
           return '<div class="qi" id="q' + r[0] + '"><div class="f">' + req(esc(r[1])) + '</div><div class="rate">' +
             [1, 2, 3, 4, 5].map(function (n) { return '<button type="button" class="opt" data-r="' + r[0] + '" data-v="' + n + '" aria-pressed="' + (st[r[0]] === n) + '">' + n + '</button>'; }).join('') +
-            '</div><div class="scale"><span>Không bổ ích</span><span>Rất bổ ích</span></div><div class="need2">Bắt buộc: chọn 1 mức.</div></div>';
+            '</div><div class="need2">Bắt buộc: chọn 1 mức.</div></div>';
         }).join('') +
       '</section>' +
       '<section class="card"><h2><span class="n">4</span>Thu hoạch của em</h2>' +
@@ -164,14 +169,16 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
       '<section class="card"><h2><span class="n">5</span>Định hướng của em</h2>' +
         '<div class="qi" id="qDh"><div class="f">' + req('Sau Ngày hội, định hướng nghề nghiệp của em') + '</div><div class="list">' +
           DH.map(function (d) { return opt('dh', d, st.dh === d); }).join('') + '</div><div class="need2">Bắt buộc: chọn 1 ý.</div></div>' +
-        '<div class="qi"><div class="f">Nhóm ngành em quan tâm <small>(không bắt buộc, chọn được nhiều)</small></div><div class="cd">' +
+        '<div class="qi"><div class="f">Nhóm ngành em quan tâm <small>(không bắt buộc, chọn được nhiều)</small></div><div class="cd ng">' +
           NGANH.map(function (g) { return opt('ng', g, st.nganh.indexOf(g) >= 0); }).join('') + '</div>' +
           '<input type="text" id="nganhKhac" maxlength="200" placeholder="Ngành khác (ghi rõ)" value="' + esc(st.nganhKhac) + '" style="margin-top:8px;display:' + (st.nganh.indexOf('Khác') >= 0 ? 'block' : 'none') + '"></div>' +
-        '<div class="qi" id="qke"><label class="f" for="ke">' + req('Kế hoạch tiếp theo của em (học tập, tìm hiểu thêm…) để chuẩn bị cho nghề nghiệp') + '</label>' +
+        '<div class="qi" id="qdinh"><label class="f" for="dinh">Ngành nghề / trường em dự định theo học và lý do em thấy phù hợp với năng lực, sở thích <small>(nếu đã có)</small></label>' +
+          ta('dinh', 'Ví dụ: Ngành Công nghệ thông tin ở trường …, vì em thích lập trình và học tốt Toán…') + '</div>' +
+        '<div class="qi" id="qke"><label class="f" for="ke">' + req('Kế hoạch tiếp theo của em (học tập, rèn luyện, tìm hiểu thêm…) để chuẩn bị cho nghề nghiệp tương lai') + '</label>' +
           ta('ke', 'Ví dụ: Tập trung học tốt Toán, Lý, Anh; tìm hiểu điểm chuẩn ngành … ở trường …') + '<div class="need2">Bắt buộc: hãy viết vài câu.</div></div>' +
       '</section>' +
-      '<section class="card"><h2><span class="n">6</span>Góp ý cho nhà trường <small>(không bắt buộc)</small></h2>' +
-        ta('gopy', 'Em muốn các buổi hướng nghiệp sau có thêm nội dung gì?') +
+      '<section class="card"><h2><span class="n">6</span>Câu hỏi và góp ý cho nhà trường <small>(không bắt buộc)</small></h2>' +
+        ta('gopy', 'Điều em còn băn khoăn về ngành nghề cần được giải đáp; nội dung, hoạt động em muốn có thêm ở các buổi hướng nghiệp sau…') +
         '<div class="hp" aria-hidden="true"><input type="text" id="web" tabindex="-1" autocomplete="off"></div>' +
       '</section>' +
       '<button type="button" class="btn pri" id="bGui">Nộp phiếu thu hoạch</button><div class="err" id="err" role="alert"></div>';
@@ -193,7 +200,7 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
       if (v === 'Khác') { $('#nganhKhac').style.display = i < 0 ? 'block' : 'none'; if (i < 0) $('#nganhKhac').focus(); }
     });
     pick('', 'mic', function (b) { noi(b); });
-    ['ten', 'tam', 'tin', 'ky', 'ke', 'gopy', 'nganhKhac'].forEach(function (k) {
+    ['ten', 'tam', 'tin', 'ky', 'dinh', 'ke', 'gopy', 'nganhKhac'].forEach(function (k) {
       var el = $('#' + k); if (el) el.oninput = function () { st[k] = this.value; clearBad(k === 'ten' ? '#qTen' : '#q' + k); };
     });
     $('#bGui').onclick = kiem;
@@ -231,7 +238,7 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
   /* ---------- Kiểm tra ⇒ xác nhận ⇒ nộp ---------- */
   function kiem() {
     if (rec) rec.stop();
-    ['ten', 'tam', 'tin', 'ky', 'ke', 'gopy', 'nganhKhac'].forEach(function (k) { var el = $('#' + k); if (el) st[k] = el.value.trim(); });
+    ['ten', 'tam', 'tin', 'ky', 'dinh', 'ke', 'gopy', 'nganhKhac'].forEach(function (k) { var el = $('#' + k); if (el) st[k] = el.value.trim(); });
     st.ten = st.ten.replace(/\s+/g, ' ').split(' ').map(function (w) { return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); }).join(' ');
     $('#ten').value = st.ten;
     var chk = [['#qTen', st.ten.length < 4 || st.ten.indexOf(' ') < 0, 'Họ và tên'], ['#qLop', !st.lop, 'Lớp'], ['#qHd', !st.hd.length, 'Hoạt động đã tham gia'],
@@ -265,7 +272,7 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
   function obSet(a) { try { localStorage.setItem(OB, JSON.stringify(a)); } catch (e) {} }
   function gui() {
     var p = { lop: st.lop, ten: st.ten, hd: st.hd.slice(), r1: st.r1, r2: st.r2, r3: st.r3, r4: st.r4, tam: st.tam, tin: st.tin, ky: st.ky,
-              dh: st.dh, nganh: st.nganh.slice(), nganhKhac: st.nganhKhac, ke: st.ke, gopy: st.gopy, web: $('#web').value,
+              dh: st.dh, nganh: st.nganh.slice(), nganhKhac: st.nganhKhac, dinh: st.dinh, ke: st.ke, gopy: st.gopy, web: $('#web').value,
               rid: Date.now().toString(36) + Math.random().toString(36).slice(2, 8) };
     var a = obGet(); a.push(p); obSet(a);
     done(p); flush();
