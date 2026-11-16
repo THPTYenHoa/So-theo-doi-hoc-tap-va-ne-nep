@@ -85,6 +85,7 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
 .list .opt small{color:var(--mut);font-weight:400}
 .ta{min-height:88px}
 .cd.ng{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.cd.ng .opt b{color:var(--pri2)}
 .cd.ng .opt{border-radius:10px;padding:8px 9px;font-size:13.5px;line-height:1.3;text-align:left}
 .mic{margin:8px 0 0;padding:8px 12px;font-size:14px}
 .mic svg{width:18px;height:18px}
@@ -119,12 +120,14 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
   var NGANH = ['Y – Dược – Sức khỏe','Kỹ thuật – Công nghệ – CNTT','Kinh tế – Tài chính – Quản trị','Ngôn ngữ – Quan hệ quốc tế – Du lịch',
                'Sư phạm – Giáo dục','Luật – Công an – Quân đội','Báo chí – Truyền thông – Marketing','Nghệ thuật – Thiết kế – Kiến trúc',
                'Khoa học tự nhiên / xã hội','Dịch vụ – Ẩm thực – Làm đẹp','Khác'];
+  var KHOI = ['A00: Toán – Lý – Hóa','A01: Toán – Lý – Anh','B00: Toán – Hóa – Sinh','B08: Toán – Sinh – Anh','C00: Văn – Sử – Địa',
+              'D01: Toán – Văn – Anh','D07: Toán – Hóa – Anh','D14: Văn – Sử – Anh','D15: Văn – Địa – Anh','Khác','Chưa xác định'];
   var OB = 'th_k11_outbox';
   var MIC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>';
   var STOP = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="7" y="7" width="10" height="10" rx="2"/></svg>';
   var OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 
-  var st = { ten: '', lop: '', hd: [], r1: 0, r2: 0, r3: 0, r4: 0, tam: '', tin: '', ky: '', dh: '', nganh: [], nganhKhac: '', dinh: '', ke: '', gopy: '' };
+  var st = { ten: '', lop: '', hd: [], r1: 0, r2: 0, r3: 0, r4: 0, tam: '', tin: '', ky: '', dh: '', nganh: [], nganhKhac: '', khoi: [], khoiKhac: '', dinh: '', ke: '', gopy: '' };
   var app = document.getElementById('app');
   function $(s) { return document.querySelector(s); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -172,6 +175,10 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
         '<div class="qi"><div class="f">Nhóm ngành em quan tâm <small>(không bắt buộc, chọn được nhiều)</small></div><div class="cd ng">' +
           NGANH.map(function (g) { return opt('ng', g, st.nganh.indexOf(g) >= 0); }).join('') + '</div>' +
           '<input type="text" id="nganhKhac" maxlength="200" placeholder="Ngành khác (ghi rõ)" value="' + esc(st.nganhKhac) + '" style="margin-top:8px;display:' + (st.nganh.indexOf('Khác') >= 0 ? 'block' : 'none') + '"></div>' +
+        '<div class="qi" id="qKhoi"><div class="f">' + req('Khối / tổ hợp môn em dự định thi') + ' <small>(chọn được nhiều)</small></div><div class="cd ng">' +
+          KHOI.map(function (g) { var i = g.indexOf(':'); return opt('kh', g, st.khoi.indexOf(g) >= 0, i > 0 ? '<b>' + g.slice(0, i) + '</b> ' + esc(g.slice(i + 1)) : esc(g)); }).join('') + '</div>' +
+          '<input type="text" id="khoiKhac" maxlength="200" placeholder="Khối / tổ hợp khác (ghi rõ)" value="' + esc(st.khoiKhac) + '" style="margin-top:8px;display:' + (st.khoi.indexOf('Khác') >= 0 ? 'block' : 'none') + '">' +
+          '<div class="need2">Bắt buộc: chọn ít nhất 1 ý (chưa biết thì chọn "Chưa xác định").</div></div>' +
         '<div class="qi" id="qdinh"><label class="f" for="dinh">Ngành nghề / trường em dự định theo học và lý do em thấy phù hợp với năng lực, sở thích <small>(nếu đã có)</small></label>' +
           ta('dinh', 'Ví dụ: Ngành Công nghệ thông tin ở trường …, vì em thích lập trình và học tốt Toán…') + '</div>' +
         '<div class="qi" id="qke"><label class="f" for="ke">' + req('Kế hoạch tiếp theo của em (học tập, rèn luyện, tìm hiểu thêm…) để chuẩn bị cho nghề nghiệp tương lai') + '</label>' +
@@ -199,8 +206,18 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
       var v = b.getAttribute('data-ng'), i = st.nganh.indexOf(v); if (i >= 0) st.nganh.splice(i, 1); else st.nganh.push(v); b.setAttribute('aria-pressed', String(i < 0));
       if (v === 'Khác') { $('#nganhKhac').style.display = i < 0 ? 'block' : 'none'; if (i < 0) $('#nganhKhac').focus(); }
     });
+    pick('', 'kh', function (b) {
+      var v = b.getAttribute('data-kh'), i = st.khoi.indexOf(v);
+      if (i >= 0) st.khoi.splice(i, 1); else {
+        st.khoi.push(v);
+        if (v === 'Chưa xác định') st.khoi = [v]; else st.khoi = st.khoi.filter(function (x) { return x !== 'Chưa xác định'; });
+      }
+      app.querySelectorAll('[data-kh]').forEach(function (x) { x.setAttribute('aria-pressed', String(st.khoi.indexOf(x.getAttribute('data-kh')) >= 0)); });
+      var on = st.khoi.indexOf('Khác') >= 0; $('#khoiKhac').style.display = on ? 'block' : 'none'; if (v === 'Khác' && on) $('#khoiKhac').focus();
+      clearBad('#qKhoi');
+    });
     pick('', 'mic', function (b) { noi(b); });
-    ['ten', 'tam', 'tin', 'ky', 'dinh', 'ke', 'gopy', 'nganhKhac'].forEach(function (k) {
+    ['ten', 'tam', 'tin', 'ky', 'dinh', 'ke', 'gopy', 'nganhKhac', 'khoiKhac'].forEach(function (k) {
       var el = $('#' + k); if (el) el.oninput = function () { st[k] = this.value; clearBad(k === 'ten' ? '#qTen' : '#q' + k); };
     });
     $('#bGui').onclick = kiem;
@@ -238,13 +255,13 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
   /* ---------- Kiểm tra ⇒ xác nhận ⇒ nộp ---------- */
   function kiem() {
     if (rec) rec.stop();
-    ['ten', 'tam', 'tin', 'ky', 'dinh', 'ke', 'gopy', 'nganhKhac'].forEach(function (k) { var el = $('#' + k); if (el) st[k] = el.value.trim(); });
+    ['ten', 'tam', 'tin', 'ky', 'dinh', 'ke', 'gopy', 'nganhKhac', 'khoiKhac'].forEach(function (k) { var el = $('#' + k); if (el) st[k] = el.value.trim(); });
     st.ten = st.ten.replace(/\s+/g, ' ').split(' ').map(function (w) { return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); }).join(' ');
     $('#ten').value = st.ten;
     var chk = [['#qTen', st.ten.length < 4 || st.ten.indexOf(' ') < 0, 'Họ và tên'], ['#qLop', !st.lop, 'Lớp'], ['#qHd', !st.hd.length, 'Hoạt động đã tham gia'],
                ['#qr1', !st.r1, 'Đánh giá câu 1'], ['#qr2', !st.r2, 'Đánh giá câu 2'], ['#qr3', !st.r3, 'Đánh giá câu 3'], ['#qr4', !st.r4, 'Đánh giá câu 4'],
                ['#qtam', st.tam.length < 5, 'Điều tâm đắc nhất'], ['#qtin', st.tin.length < 5, 'Thông tin mới thu nhận được'],
-               ['#qDh', !st.dh, 'Định hướng sau Ngày hội'], ['#qke', st.ke.length < 5, 'Kế hoạch tiếp theo']];
+               ['#qDh', !st.dh, 'Định hướng sau Ngày hội'], ['#qKhoi', !st.khoi.length, 'Khối / tổ hợp dự định thi'], ['#qke', st.ke.length < 5, 'Kế hoạch tiếp theo']];
     var miss = chk.filter(function (c) { $(c[0]).classList.toggle('bad', c[1]); return c[1]; });
     if (miss.length) {
       $('#err').textContent = 'Còn thiếu: ' + miss.map(function (c) { return c[2]; }).join(', ') + ' — hãy điền đủ trước khi nộp.';
@@ -253,13 +270,14 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
     }
     $('#err').textContent = '';
     var ng = st.nganh.filter(function (g) { return g !== 'Khác'; }); if (st.nganh.indexOf('Khác') >= 0 && st.nganhKhac) ng.push('Khác: ' + st.nganhKhac);
+    var kh = st.khoi.filter(function (g) { return g !== 'Khác'; }); if (st.khoi.indexOf('Khác') >= 0 && st.khoiKhac) kh.push('Khác: ' + st.khoiKhac);
     var ov = document.createElement('div'); ov.className = 'ov';
     ov.innerHTML = '<div class="sheet" role="dialog" aria-modal="true"><h3>Xác nhận trước khi nộp</h3>' +
       '<p class="cf">Em là <b>' + esc(st.ten) + '</b>, <b>học sinh lớp ' + st.lop + '</b>.</p>' +
       '<div class="cf">Hoạt động em đã tham gia:<ul>' + st.hd.map(function (h) { return '<li>' + esc(h) + '</li>'; }).join('') + '</ul></div>' +
       '<p class="cf">Đánh giá: bổ ích chung <b>' + st.r1 + '/5</b> · diễn giả <b>' + st.r2 + '/5</b> · trải nghiệm, gian hàng <b>' + st.r3 + '/5</b> · hiểu rõ hơn về ngành nghề <b>' + st.r4 + '/5</b></p>' +
       '<div class="cf">Điều em tâm đắc nhất:</div><div class="q">' + esc(st.tam) + '</div>' +
-      '<p class="cf">Định hướng: <b>' + esc(st.dh) + '</b>' + (ng.length ? '<br>Nhóm ngành quan tâm: <b>' + esc(ng.join(', ')) + '</b>' : '') + '</p>' +
+      '<p class="cf">Định hướng: <b>' + esc(st.dh) + '</b>' + (ng.length ? '<br>Nhóm ngành quan tâm: <b>' + esc(ng.join(', ')) + '</b>' : '') + '<br>Khối thi dự định: <b>' + esc(kh.join('; ')) + '</b></p>' +
       '<button type="button" class="btn pri" id="ok">Đúng, nộp phiếu</button><button type="button" class="btn ghost" id="sua">Sửa lại</button></div>';
     document.body.appendChild(ov);
     var close = function () { ov.remove(); };
@@ -272,7 +290,7 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
   function obSet(a) { try { localStorage.setItem(OB, JSON.stringify(a)); } catch (e) {} }
   function gui() {
     var p = { lop: st.lop, ten: st.ten, hd: st.hd.slice(), r1: st.r1, r2: st.r2, r3: st.r3, r4: st.r4, tam: st.tam, tin: st.tin, ky: st.ky,
-              dh: st.dh, nganh: st.nganh.slice(), nganhKhac: st.nganhKhac, dinh: st.dinh, ke: st.ke, gopy: st.gopy, web: $('#web').value,
+              dh: st.dh, nganh: st.nganh.slice(), nganhKhac: st.nganhKhac, khoi: st.khoi.slice(), khoiKhac: st.khoiKhac, dinh: st.dinh, ke: st.ke, gopy: st.gopy, web: $('#web').value,
               rid: Date.now().toString(36) + Math.random().toString(36).slice(2, 8) };
     var a = obGet(); a.push(p); obSet(a);
     done(p); flush();
