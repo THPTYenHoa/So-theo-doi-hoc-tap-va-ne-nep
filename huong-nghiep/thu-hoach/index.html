@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Phiếu thu hoạch Tư vấn hướng nghiệp · Khối 11 · THPT Yên Hòa</title>
+<meta name="description" content="Phiếu thu hoạch của học sinh khối 11 THPT Yên Hòa sau Ngày hội Tư vấn hướng nghiệp 28/11/2026.">
+<meta name="theme-color" content="#1f5f8b">
+<link rel="icon" href="../../img/favicon.png">
+<link rel="apple-touch-icon" href="../../img/logo-180.png">
+<link rel="preconnect" href="https://script.google.com">
+<link rel="preconnect" href="https://script.googleusercontent.com">
+<!-- Phiếu thu hoạch hướng nghiệp K11 (16/11/2026): 1 trang, không thư viện ngoài. Gửi tới yenhoa-backend ▸ hanh-kiem-11d3 ▸ ThuHoach.gs (thGui).
+     KHÔNG ẩn danh: họ tên + lớp bắt buộc. Nói để viết = nhận giọng nói của trình duyệt / bàn phím điện thoại. -->
+<style>
+:root{--ink:#12324a;--pri:#1f5f8b;--pri2:#174a6d;--soft:#eaf3fa;--line:#d3dfe8;--fld:#b9c8d4;--mut:#5d6f7d;--bg:#f5f8fb;--ok:#1d7a4c;--err:#b3261e;--rec:#c0392b}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:1.5;-webkit-text-size-adjust:100%}
+.wrap{max-width:640px;margin:0 auto;padding:14px 16px 40px}
+.top{display:flex;gap:12px;align-items:center;padding:4px 0 12px}
+.top img{width:50px;height:50px;border-radius:50%;flex:none}
+.sch{font-size:12.5px;font-weight:600;color:var(--mut);letter-spacing:.03em;text-transform:uppercase}
+h1{margin:2px 0 0;font-size:20px;line-height:1.25}
+.intro{margin:0 0 12px;color:var(--mut);font-size:15px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px;margin:0 0 12px}
+.card.bad{border-color:var(--err);box-shadow:0 0 0 2px rgba(179,38,30,.15)}
+h2{margin:0 0 10px;font-size:16px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+h2 .n{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--soft);color:var(--pri);font-size:13px;flex:none}
+h2 small,.f small{font-weight:400;color:var(--mut);font-size:13px}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.opt{background:#fff;border:1.5px solid var(--fld);border-radius:10px}
+.opt[aria-pressed=true]{border-color:var(--pri);background:var(--soft);color:var(--pri2);box-shadow:inset 0 0 0 1px var(--pri)}
+.vai{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vai .opt{padding:13px 10px;text-align:left;font-weight:600}
+.vai .opt span{display:block;font-weight:400;font-size:13px;color:var(--mut)}
+.lopg{margin:0 0 6px;font-size:13px;color:var(--mut)}
+.lop{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:0 0 10px}
+.lop .opt{padding:11px 0;font-weight:600;font-size:15px}
+.cd{display:flex;flex-wrap:wrap;gap:8px}
+.cd .opt{padding:8px 12px;font-size:14px;border-radius:999px}
+.f{display:block;font-size:14px;color:var(--mut);margin:0 0 6px}
+input[type=text],textarea{width:100%;font:inherit;color:inherit;background:#fff;border:1.5px solid var(--fld);border-radius:10px;padding:11px 12px;outline:none;-webkit-appearance:none}
+input[type=text]:focus,textarea:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(31,95,139,.15)}
+textarea{min-height:140px;resize:vertical}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;padding:11px 16px;border:1.5px solid var(--fld);background:#fff;font-weight:600}
+.btn svg{width:20px;height:20px;flex:none}
+.btn.on{border-color:var(--rec);color:var(--rec);background:#fdf0ef}
+.btn.pri{background:var(--pri);border-color:var(--pri);color:#fff;width:100%;padding:15px;font-size:17px}
+.btn.ghost{background:#fff;color:var(--ink);width:100%;padding:14px}
+.row{display:flex;gap:10px;align-items:center;margin:10px 0 0;flex-wrap:wrap}
+.hint{font-size:13px;color:var(--mut);margin:8px 0 0}
+.hint.live{color:var(--rec)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--rec);display:inline-block;margin-right:4px;animation:bl 1s infinite}
+@keyframes bl{50%{opacity:.25}}
+.err{color:var(--err);font-size:14px;margin:10px 0 0}
+.need{display:none;color:var(--err);font-size:13.5px;font-weight:600;margin:8px 0 0}
+.card.bad .need{display:block}
+.chrome{font-size:13px;color:var(--pri2);background:var(--soft);border-radius:8px;padding:8px 10px;margin:10px 0 0}
+.hp{position:absolute;left:-5000px;width:1px;height:1px;overflow:hidden}
+.ov{position:fixed;inset:0;background:rgba(18,50,74,.45);display:flex;align-items:flex-end;justify-content:center;z-index:9;padding:0}
+.sheet{background:#fff;width:100%;max-width:640px;border-radius:16px 16px 0 0;padding:18px 16px calc(16px + env(safe-area-inset-bottom));max-height:88vh;overflow:auto}
+@media (min-width:700px){.ov{align-items:center}.sheet{border-radius:16px}}
+.sheet h3{margin:0 0 10px;font-size:18px}
+.cf{margin:0 0 10px;font-size:16px}
+.cf b{color:var(--pri2)}
+.q{background:var(--soft);border-radius:10px;padding:10px 12px;white-space:pre-wrap;word-wrap:break-word;margin:4px 0 10px}
+.sheet .btn{margin-top:8px}
+.done{text-align:center;padding:26px 16px}
+.done .ic{width:56px;height:56px;border-radius:50%;background:#e6f4ec;color:var(--ok);display:inline-flex;align-items:center;justify-content:center}
+.done .ic svg{width:30px;height:30px}
+.done h2{display:block;font-size:20px;margin:12px 0 6px}
+.done p{color:var(--mut);margin:0 0 14px}
+.st{font-size:13px;color:var(--mut);margin:0 0 14px}
+.st.ok{color:var(--ok)}
+footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
+@media (max-width:420px){.lop{grid-template-columns:repeat(4,1fr)}h1{font-size:19px}}
+.rate{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.rate .opt{padding:10px 0;font-weight:700;font-size:16px}
+.scale{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin:4px 2px 0}
+.qi{margin:0 0 14px}.qi:last-child{margin:0}
+.qi .f{color:var(--ink);font-size:15px}
+.qi .f b{color:var(--err);font-weight:600}
+.list{display:grid;gap:8px}
+.list .opt{padding:11px 12px;text-align:left}
+.ta{min-height:96px}
+.mic{margin:8px 0 0;padding:8px 12px;font-size:14px}
+.mic svg{width:18px;height:18px}
+.qi.bad .f{color:var(--err)}
+.qi .need2{display:none;color:var(--err);font-size:13px;font-weight:600;margin:6px 0 0}
+.qi.bad .need2{display:block}
+.cf ul{margin:4px 0 0;padding-left:20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><img src="../../img/logo-yenhoa.webp" width="50" height="50" alt="Logo THPT Yên Hòa">
+    <div><div class="sch">THPT Yên Hòa · Khối 11</div><h1>Phiếu thu hoạch Tư vấn hướng nghiệp</h1></div></div>
+  <main id="app"><noscript>Hãy bật JavaScript để làm phiếu thu hoạch.</noscript></main>
+  <footer>Năm học 2026-2027 · Ngày hội Tư vấn hướng nghiệp 28/11/2026 · Mỗi học sinh hoàn thành 1 phiếu.</footer>
+</div>
+<script>
+(function () {
+  'use strict';
+  var GAS = 'https://script.google.com/macros/s/AKfycbz1x-UG4_Rk3M3_APc-hJ0VHns2GfvPtR6T_F8nl4KlEHnNsiYGMbY0Vc4moiIRy8gO/exec';
+  var LOP_A = ['11A1','11A2','11A3','11A4','11A5','11A6','11A7','11A8','11A9','11A10'];
+  var LOP_D = ['11D1','11D2','11D3','11D4','11D5','11D6','11D7'];
+  var HD = ['Nghe diễn giả chia sẻ định hướng nghề nghiệp','Trải nghiệm nghề Pha chế, làm bánh','Trải nghiệm nghề Làm đẹp','Tham quan gian hàng các đơn vị tư vấn'];
+  var RATE = [['r1','Ngày hội bổ ích với em ở mức nào?'],['r2','Phần chia sẻ của diễn giả về định hướng nghề nghiệp, chọn ngành, chọn trường'],
+              ['r3','Hoạt động trải nghiệm nghề / tham quan gian hàng'],['r4','Sau buổi, em hiểu rõ hơn về ngành nghề, điều kiện tuyển sinh, cơ hội việc làm']];
+  var TXT = [['tam','Điều em tâm đắc, ấn tượng nhất sau Ngày hội', 'Ví dụ: Lời khuyên của diễn giả về việc chọn ngành theo năng lực, không chạy theo số đông…', 1],
+             ['tin','Những thông tin mới em thu nhận được về ngành nghề, trường học, điều kiện tuyển sinh', 'Ví dụ: Ngành … cần tổ hợp …, học ở trường …, cơ hội việc làm …', 1],
+             ['ky','Kỹ năng / trải nghiệm thực tế em học được ở khu trải nghiệm nghề hoặc gian hàng', 'Ví dụ: Biết các bước pha một ly cà phê, hiểu nghề làm đẹp cần sự tỉ mỉ…', 0]];
+  var DH = ['Đã xác định rõ ngành nghề mình muốn theo','Đã có vài lựa chọn, cần tìm hiểu thêm','Vẫn chưa xác định được'];
+  var NGANH = ['Y – Dược – Sức khỏe','Kỹ thuật – Công nghệ – CNTT','Kinh tế – Tài chính – Quản trị','Ngôn ngữ – Quan hệ quốc tế – Du lịch',
+               'Sư phạm – Giáo dục','Luật – Công an – Quân đội','Báo chí – Truyền thông – Marketing','Nghệ thuật – Thiết kế – Kiến trúc',
+               'Khoa học tự nhiên / xã hội','Dịch vụ – Ẩm thực – Làm đẹp','Khác'];
+  var OB = 'th_k11_outbox';
+  var MIC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>';
+  var STOP = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="7" y="7" width="10" height="10" rx="2"/></svg>';
+  var OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+
+  var st = { ten: '', lop: '', hd: [], r1: 0, r2: 0, r3: 0, r4: 0, tam: '', tin: '', ky: '', dh: '', nganh: [], nganhKhac: '', ke: '', gopy: '' };
+  var app = document.getElementById('app');
+  function $(s) { return document.querySelector(s); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function opt(attr, v, on, txt) { return '<button type="button" class="opt" data-' + attr + '="' + esc(v) + '" aria-pressed="' + on + '">' + (txt || esc(v)) + '</button>'; }
+  function ta(id, ph) {
+    return '<textarea class="ta" id="' + id + '" maxlength="3000" placeholder="' + esc(ph) + '">' + esc(st[id]) + '</textarea>' +
+      '<button type="button" class="btn mic" data-mic="' + id + '">' + MIC + '<span>Nói để viết</span></button>';
+  }
+  function req(t) { return t + ' <b>*</b>'; }
+
+  function form() {
+    var lb = function (l) { return opt('lop', l, st.lop === l); };
+    app.innerHTML =
+      '<p class="intro">Sau Ngày hội Tư vấn hướng nghiệp (thứ Bảy 28/11/2026), mỗi học sinh khối 11 hoàn thành phiếu này. Mục có dấu <b style="color:var(--err)">*</b> là bắt buộc.</p>' +
+      '<section class="card" id="cTT"><h2><span class="n">1</span>Thông tin học sinh</h2>' +
+        '<div class="qi" id="qTen"><label class="f" for="ten">' + req('Họ và tên') + '</label>' +
+          '<input type="text" id="ten" maxlength="80" autocomplete="name" placeholder="Ví dụ: Nguyễn Minh An" value="' + esc(st.ten) + '">' +
+          '<div class="need2">Bắt buộc: điền đầy đủ họ và tên.</div></div>' +
+        '<div class="qi" id="qLop"><div class="f">' + req('Lớp') + '</div>' +
+          '<div class="lopg">Ban A</div><div class="lop">' + LOP_A.map(lb).join('') + '</div>' +
+          '<div class="lopg">Ban D</div><div class="lop">' + LOP_D.map(lb).join('') + '</div>' +
+          '<div class="need2">Bắt buộc: chọn lớp.</div></div>' +
+      '</section>' +
+      '<section class="card"><h2><span class="n">2</span>Hoạt động em đã tham gia</h2>' +
+        '<div class="qi" id="qHd"><div class="f">' + req('Chọn tất cả hoạt động em đã tham gia') + '</div><div class="list">' +
+          HD.map(function (h) { return opt('hd', h, st.hd.indexOf(h) >= 0); }).join('') + '</div><div class="need2">Bắt buộc: chọn ít nhất 1 hoạt động.</div></div>' +
+      '</section>' +
+      '<section class="card"><h2><span class="n">3</span>Đánh giá <small>(1 = không bổ ích · 5 = rất bổ ích)</small></h2>' +
+        RATE.map(function (r) {
+          return '<div class="qi" id="q' + r[0] + '"><div class="f">' + req(esc(r[1])) + '</div><div class="rate">' +
+            [1, 2, 3, 4, 5].map(function (n) { return '<button type="button" class="opt" data-r="' + r[0] + '" data-v="' + n + '" aria-pressed="' + (st[r[0]] === n) + '">' + n + '</button>'; }).join('') +
+            '</div><div class="scale"><span>Không bổ ích</span><span>Rất bổ ích</span></div><div class="need2">Bắt buộc: chọn 1 mức.</div></div>';
+        }).join('') +
+      '</section>' +
+      '<section class="card"><h2><span class="n">4</span>Thu hoạch của em</h2>' +
+        TXT.map(function (t) {
+          return '<div class="qi" id="q' + t[0] + '"><label class="f" for="' + t[0] + '">' + (t[3] ? req(esc(t[1])) : esc(t[1]) + ' <small>(không bắt buộc)</small>') + '</label>' +
+            ta(t[0], t[2]) + '<div class="need2">Bắt buộc: hãy viết vài câu.</div></div>';
+        }).join('') +
+        '<div class="chrome">Lưu ý: để dùng <b>Nói để viết</b>, hãy mở link bằng trình duyệt <b>Chrome</b>. Trên iPhone có thể bấm biểu tượng micro trên bàn phím để nói.</div>' +
+      '</section>' +
+      '<section class="card"><h2><span class="n">5</span>Định hướng của em</h2>' +
+        '<div class="qi" id="qDh"><div class="f">' + req('Sau Ngày hội, định hướng nghề nghiệp của em') + '</div><div class="list">' +
+          DH.map(function (d) { return opt('dh', d, st.dh === d); }).join('') + '</div><div class="need2">Bắt buộc: chọn 1 ý.</div></div>' +
+        '<div class="qi"><div class="f">Nhóm ngành em quan tâm <small>(không bắt buộc, chọn được nhiều)</small></div><div class="cd">' +
+          NGANH.map(function (g) { return opt('ng', g, st.nganh.indexOf(g) >= 0); }).join('') + '</div>' +
+          '<input type="text" id="nganhKhac" maxlength="200" placeholder="Ngành khác (ghi rõ)" value="' + esc(st.nganhKhac) + '" style="margin-top:8px;display:' + (st.nganh.indexOf('Khác') >= 0 ? 'block' : 'none') + '"></div>' +
+        '<div class="qi" id="qke"><label class="f" for="ke">' + req('Kế hoạch tiếp theo của em (học tập, tìm hiểu thêm…) để chuẩn bị cho nghề nghiệp') + '</label>' +
+          ta('ke', 'Ví dụ: Tập trung học tốt Toán, Lý, Anh; tìm hiểu điểm chuẩn ngành … ở trường …') + '<div class="need2">Bắt buộc: hãy viết vài câu.</div></div>' +
+      '</section>' +
+      '<section class="card"><h2><span class="n">6</span>Góp ý cho nhà trường <small>(không bắt buộc)</small></h2>' +
+        ta('gopy', 'Em muốn các buổi hướng nghiệp sau có thêm nội dung gì?') +
+        '<div class="hp" aria-hidden="true"><input type="text" id="web" tabindex="-1" autocomplete="off"></div>' +
+      '</section>' +
+      '<button type="button" class="btn pri" id="bGui">Nộp phiếu thu hoạch</button><div class="err" id="err" role="alert"></div>';
+    wire();
+  }
+
+  function pick(sel, attr, onClick) { app.querySelectorAll('[data-' + attr + ']').forEach(function (b) { b.onclick = function () { onClick(b); }; }); }
+  function clearBad(id) { var q = $(id); if (q) q.classList.remove('bad'); }
+  function wire() {
+    pick('', 'lop', function (b) { st.lop = b.getAttribute('data-lop'); app.querySelectorAll('[data-lop]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); }); clearBad('#qLop'); });
+    pick('', 'hd', function (b) { var v = b.getAttribute('data-hd'), i = st.hd.indexOf(v); if (i >= 0) st.hd.splice(i, 1); else st.hd.push(v); b.setAttribute('aria-pressed', String(i < 0)); clearBad('#qHd'); });
+    pick('', 'r', function (b) {
+      var k = b.getAttribute('data-r'); st[k] = +b.getAttribute('data-v');
+      app.querySelectorAll('[data-r="' + k + '"]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); }); clearBad('#q' + k);
+    });
+    pick('', 'dh', function (b) { st.dh = b.getAttribute('data-dh'); app.querySelectorAll('[data-dh]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); }); clearBad('#qDh'); });
+    pick('', 'ng', function (b) {
+      var v = b.getAttribute('data-ng'), i = st.nganh.indexOf(v); if (i >= 0) st.nganh.splice(i, 1); else st.nganh.push(v); b.setAttribute('aria-pressed', String(i < 0));
+      if (v === 'Khác') { $('#nganhKhac').style.display = i < 0 ? 'block' : 'none'; if (i < 0) $('#nganhKhac').focus(); }
+    });
+    pick('', 'mic', function (b) { noi(b); });
+    ['ten', 'tam', 'tin', 'ky', 'ke', 'gopy', 'nganhKhac'].forEach(function (k) {
+      var el = $('#' + k); if (el) el.oninput = function () { st[k] = this.value; clearBad(k === 'ten' ? '#qTen' : '#q' + k); };
+    });
+    $('#bGui').onclick = kiem;
+  }
+
+  /* ---------- Nói để viết (giọng nói của trình duyệt) ---------- */
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition, rec = null, recBtn = null;
+  var KB = 'Hãy bấm biểu tượng micro trên bàn phím điện thoại rồi nói, hoặc mở link bằng Chrome.';
+  function btnSet(b, on) { b.classList.toggle('on', on); b.innerHTML = (on ? STOP : MIC) + '<span>' + (on ? 'Dừng nói' : 'Nói để viết') + '</span>'; }
+  function noi(b) {
+    var id = b.getAttribute('data-mic'), t = $('#' + id);
+    if (rec) { var same = recBtn === b; rec.stop(); if (same) return; }
+    if (!SR) { t.focus(); toast(KB); return; }
+    var base = t.value.replace(/\s+$/, ''), fin = ''; if (base) base += ' ';
+    try { rec = new SR(); } catch (e) { rec = null; t.focus(); toast(KB); return; }
+    recBtn = b; rec.lang = 'vi-VN'; rec.continuous = true; rec.interimResults = true;
+    rec.onresult = function (ev) {
+      var tmp = '';
+      for (var i = ev.resultIndex; i < ev.results.length; i++) {
+        if (ev.results[i].isFinal) fin += ev.results[i][0].transcript.trim() + ' '; else tmp += ev.results[i][0].transcript;
+      }
+      t.value = base + fin + tmp; st[id] = t.value; clearBad('#q' + id);
+    };
+    rec.onerror = function (ev) { if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed' || ev.error === 'audio-capture' || ev.error === 'network') { t.focus(); toast('Chưa dùng được micro. ' + KB); } };
+    rec.onend = function () { btnSet(b, false); t.value = t.value.replace(/\s+$/, ''); st[id] = t.value; rec = null; recBtn = null; };
+    try { rec.start(); } catch (e) { rec = null; recBtn = null; t.focus(); toast(KB); return; }
+    btnSet(b, true);
+  }
+  var toastT;
+  function toast(m) {
+    var el = $('#toast'); if (!el) { el = document.createElement('div'); el.id = 'toast'; el.style.cssText = 'position:fixed;left:16px;right:16px;bottom:16px;max-width:600px;margin:0 auto;background:#12324a;color:#fff;padding:12px 14px;border-radius:10px;font-size:14px;z-index:10'; document.body.appendChild(el); }
+    el.textContent = m; el.style.display = 'block'; clearTimeout(toastT); toastT = setTimeout(function () { el.style.display = 'none'; }, 5000);
+  }
+
+  /* ---------- Kiểm tra ⇒ xác nhận ⇒ nộp ---------- */
+  function kiem() {
+    if (rec) rec.stop();
+    ['ten', 'tam', 'tin', 'ky', 'ke', 'gopy', 'nganhKhac'].forEach(function (k) { var el = $('#' + k); if (el) st[k] = el.value.trim(); });
+    st.ten = st.ten.replace(/\s+/g, ' ').split(' ').map(function (w) { return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); }).join(' ');
+    $('#ten').value = st.ten;
+    var chk = [['#qTen', st.ten.length < 4 || st.ten.indexOf(' ') < 0, 'Họ và tên'], ['#qLop', !st.lop, 'Lớp'], ['#qHd', !st.hd.length, 'Hoạt động đã tham gia'],
+               ['#qr1', !st.r1, 'Đánh giá câu 1'], ['#qr2', !st.r2, 'Đánh giá câu 2'], ['#qr3', !st.r3, 'Đánh giá câu 3'], ['#qr4', !st.r4, 'Đánh giá câu 4'],
+               ['#qtam', st.tam.length < 5, 'Điều tâm đắc nhất'], ['#qtin', st.tin.length < 5, 'Thông tin mới thu nhận được'],
+               ['#qDh', !st.dh, 'Định hướng sau Ngày hội'], ['#qke', st.ke.length < 5, 'Kế hoạch tiếp theo']];
+    var miss = chk.filter(function (c) { $(c[0]).classList.toggle('bad', c[1]); return c[1]; });
+    if (miss.length) {
+      $('#err').textContent = 'Còn thiếu: ' + miss.map(function (c) { return c[2]; }).join(', ') + ' — hãy điền đủ trước khi nộp.';
+      $(miss[0][0]).scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    $('#err').textContent = '';
+    var ng = st.nganh.filter(function (g) { return g !== 'Khác'; }); if (st.nganh.indexOf('Khác') >= 0 && st.nganhKhac) ng.push('Khác: ' + st.nganhKhac);
+    var ov = document.createElement('div'); ov.className = 'ov';
+    ov.innerHTML = '<div class="sheet" role="dialog" aria-modal="true"><h3>Xác nhận trước khi nộp</h3>' +
+      '<p class="cf">Em là <b>' + esc(st.ten) + '</b>, <b>học sinh lớp ' + st.lop + '</b>.</p>' +
+      '<div class="cf">Hoạt động em đã tham gia:<ul>' + st.hd.map(function (h) { return '<li>' + esc(h) + '</li>'; }).join('') + '</ul></div>' +
+      '<p class="cf">Đánh giá: bổ ích chung <b>' + st.r1 + '/5</b> · diễn giả <b>' + st.r2 + '/5</b> · trải nghiệm, gian hàng <b>' + st.r3 + '/5</b> · hiểu rõ hơn về ngành nghề <b>' + st.r4 + '/5</b></p>' +
+      '<div class="cf">Điều em tâm đắc nhất:</div><div class="q">' + esc(st.tam) + '</div>' +
+      '<p class="cf">Định hướng: <b>' + esc(st.dh) + '</b>' + (ng.length ? '<br>Nhóm ngành quan tâm: <b>' + esc(ng.join(', ')) + '</b>' : '') + '</p>' +
+      '<button type="button" class="btn pri" id="ok">Đúng, nộp phiếu</button><button type="button" class="btn ghost" id="sua">Sửa lại</button></div>';
+    document.body.appendChild(ov);
+    var close = function () { ov.remove(); };
+    ov.onclick = function (e) { if (e.target === ov) close(); };
+    ov.querySelector('#sua').onclick = close;
+    ov.querySelector('#ok').onclick = function () { close(); gui(); };
+  }
+
+  function obGet() { try { return JSON.parse(localStorage.getItem(OB) || '[]'); } catch (e) { return []; } }
+  function obSet(a) { try { localStorage.setItem(OB, JSON.stringify(a)); } catch (e) {} }
+  function gui() {
+    var p = { lop: st.lop, ten: st.ten, hd: st.hd.slice(), r1: st.r1, r2: st.r2, r3: st.r3, r4: st.r4, tam: st.tam, tin: st.tin, ky: st.ky,
+              dh: st.dh, nganh: st.nganh.slice(), nganhKhac: st.nganhKhac, ke: st.ke, gopy: st.gopy, web: $('#web').value,
+              rid: Date.now().toString(36) + Math.random().toString(36).slice(2, 8) };
+    var a = obGet(); a.push(p); obSet(a);
+    done(p); flush();
+  }
+  var running = false, tries = 0;
+  function flush() {
+    if (running) return;
+    var a = obGet(); if (!a.length) return;
+    running = true; var p = a[0], body = JSON.stringify({ action: 'thGui', payload: p });
+    fetch(GAS, { method: 'POST', redirect: 'follow', keepalive: body.length < 60000, headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: body })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        running = false; obSet(obGet().filter(function (x) { return x.rid !== p.rid; }));
+        if (j && j.ok) { tries = 0; status(p.rid, 'ok'); flush(); } else status(p.rid, 'bad', (j && j.error) || '');
+      })
+      .catch(function () { running = false; tries++; status(p.rid, 'wait'); setTimeout(flush, Math.min(30000, 2000 * tries)); });
+  }
+  function status(rid, s, msg) {
+    var el = document.querySelector('[data-rid="' + rid + '"]'); if (!el) return;
+    el.className = 'st' + (s === 'ok' ? ' ok' : '');
+    el.textContent = s === 'ok' ? '✓ Đã lưu phiếu thu hoạch.' : s === 'wait' ? 'Mạng yếu — phiếu được giữ trên máy và tự gửi lại khi có mạng.'
+      : 'Chưa lưu được: ' + msg + ' Hãy bấm "Sửa phiếu" và nộp lại.';
+  }
+  function done(p) {
+    app.innerHTML = '<section class="card done"><div class="ic">' + OK + '</div><h2>Đã nộp phiếu thu hoạch</h2>' +
+      '<p>Cảm ơn em ' + esc(p.ten) + ' (lớp ' + p.lop + '). Phiếu của em đã được gửi về giáo viên chủ nhiệm và Ban tổ chức.</p>' +
+      '<div class="st" data-rid="' + p.rid + '">Đang lưu…</div>' +
+      '<button type="button" class="btn ghost" id="bSua">Sửa phiếu và nộp lại</button></section>';
+    $('#bSua').onclick = function () { form(); window.scrollTo(0, 0); };
+    window.scrollTo(0, 0);
+  }
+
+  form();
+  window.addEventListener('online', flush);
+  setTimeout(function () { flush(); try { fetch(GAS + '?action=ping', { mode: 'no-cors' }); } catch (e) {} }, 600);
+})();
+</script>
+</body>
+</html>
