@@ -10,7 +10,8 @@
 <link rel="apple-touch-icon" href="../../img/logo-180.png">
 <link rel="preconnect" href="https://script.google.com">
 <link rel="preconnect" href="https://script.googleusercontent.com">
-<!-- Phiếu thu hoạch hướng nghiệp K11 (16/11/2026): 1 trang, không thư viện ngoài. Gửi tới yenhoa-backend ▸ hanh-kiem-11d3 ▸ ThuHoach.gs (thGui).
+<!-- 27/11/2026: mục 7 Ảnh minh chứng (bắt buộc, 1 ảnh / em; thu nhỏ ≤ 1600 px JPEG rồi gửi kèm thGui ⇒ thư mục Drive, link ở file kết quả).
+     Phiếu thu hoạch hướng nghiệp K11 (16/11/2026): 1 trang, không thư viện ngoài. Gửi tới yenhoa-backend ▸ hanh-kiem-11d3 ▸ ThuHoach.gs (thGui).
      KHÔNG ẩn danh: họ tên + lớp bắt buộc. Nói để viết = nhận giọng nói của trình duyệt / bàn phím điện thoại. -->
 <style>
 :root{--ink:#12324a;--pri:#1f5f8b;--pri2:#174a6d;--soft:#eaf3fa;--line:#d3dfe8;--fld:#b9c8d4;--mut:#5d6f7d;--bg:#f5f8fb;--ok:#1d7a4c;--err:#b3261e;--rec:#c0392b}
@@ -100,6 +101,15 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
 .micb.on{background:var(--rec);border-color:var(--rec);color:#fff;animation:pu 1.3s infinite}
 @keyframes pu{0%{box-shadow:0 0 0 0 rgba(192,57,43,.45)}70%{box-shadow:0 0 0 10px rgba(192,57,43,0)}100%{box-shadow:0 0 0 0 rgba(192,57,43,0)}}
 .hint:empty{display:none}
+.anh{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.anh .btn{padding:12px 8px;font-size:15px}
+.anhv{display:flex;gap:12px;align-items:center;margin:10px 0 0;padding:10px;border:1.5px solid var(--fld);border-radius:12px;background:var(--soft)}
+.anhv img{width:96px;height:96px;object-fit:cover;border-radius:8px;flex:none;background:#fff}
+.anhv .nm{font-size:14px;word-break:break-word}
+.anhv .nm small{display:block;color:var(--mut);font-size:12.5px}
+.anhv .x{margin-top:6px;padding:6px 10px;font-size:13.5px}
+.qi.bad .anh .btn{border-color:var(--err)}
+.cfimg{display:block;max-width:100%;max-height:220px;border-radius:10px;margin:4px 0 10px}
 </style>
 </head>
 <body>
@@ -132,9 +142,11 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
   var OB = 'th_k11_outbox';
   var MIC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>';
   var STOP = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="7" y="7" width="10" height="10" rx="2"/></svg>';
+  var CAM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
+  var IMG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>';
   var OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 
-  var st = { ten: '', lop: '', hd: [], r1: 0, r2: 0, r3: 0, r4: 0, tam: '', tin: '', ky: '', dh: '', nganh: [], nganhKhac: '', khoi: [], khoiKhac: '', dinh: '', ke: '', gopy: '' };
+  var st = { ten: '', lop: '', hd: [], r1: 0, r2: 0, r3: 0, r4: 0, tam: '', tin: '', ky: '', dh: '', nganh: [], nganhKhac: '', khoi: [], khoiKhac: '', dinh: '', ke: '', gopy: '', anh: null };
   var app = document.getElementById('app');
   function $(s) { return document.querySelector(s); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -194,6 +206,13 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
         ta('gopy', 'Điều em còn băn khoăn về ngành nghề cần được giải đáp; nội dung, hoạt động em muốn có thêm ở các buổi hướng nghiệp sau…') +
         '<div class="hp" aria-hidden="true"><input type="text" id="web" tabindex="-1" autocomplete="off"></div>' +
       '</section>' +
+      '<section class="card"><h2><span class="n">7</span>Ảnh minh chứng</h2>' +
+        '<div class="qi" id="qAnh"><div class="f">' + req('1 ảnh chứng minh em đã tham gia Ngày hội') + '</div>' +
+          '<p class="hint" style="margin:-2px 0 10px">Ví dụ: ảnh em ở hội trường, khu trải nghiệm nghề hoặc gian hàng.</p>' +
+          '<div class="anh"><button type="button" class="btn" id="bChup">' + CAM + 'Chụp ảnh</button><button type="button" class="btn" id="bChon">' + IMG + 'Chọn ảnh</button></div>' +
+          '<input type="file" id="fChup" accept="image/*" capture="environment" hidden><input type="file" id="fChon" accept="image/*" hidden>' +
+          '<div id="anhV">' + anhView() + '</div><div class="need2">Bắt buộc: thêm 1 ảnh minh chứng.</div></div>' +
+      '</section>' +
       '<button type="button" class="btn pri" id="bGui">Nộp phiếu thu hoạch</button><div class="err" id="err" role="alert"></div>';
     wire();
   }
@@ -227,6 +246,49 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
       var el = $('#' + k); if (el) el.oninput = function () { st[k] = this.value; clearBad(k === 'ten' ? '#qTen' : '#q' + k); };
     });
     $('#bGui').onclick = kiem;
+    $('#bChup').onclick = function () { $('#fChup').click(); };
+    $('#bChon').onclick = function () { $('#fChon').click(); };
+    ['#fChup', '#fChon'].forEach(function (id) { $(id).onchange = function () { var f = this.files && this.files[0]; this.value = ''; if (f) layAnh(f); }; });
+    wireAnh();
+  }
+
+  /* ---------- Ảnh minh chứng: thu nhỏ ≤ 1600 px JPEG (ảnh điện thoại 3–8 MB ⇒ ~300–600 KB) ---------- */
+  var MAXP = 1600, anhBusy = false;
+  function anhSrc(a) { return a && a.prev ? a.prev : ''; }
+  function anhView() {
+    if (anhBusy) return '<div class="anhv"><div class="nm">Đang xử lý ảnh…</div></div>';
+    var a = st.anh; if (!a) return '';
+    return '<div class="anhv">' + (anhSrc(a) ? '<img src="' + anhSrc(a) + '" alt="Ảnh minh chứng">' : '') +
+      '<div class="nm">' + esc(a.name || 'Ảnh minh chứng') + '<small>' + Math.max(1, Math.round(a.kb)) + ' KB · sẽ gửi kèm phiếu</small>' +
+      '<button type="button" class="btn x" id="bXoaAnh">Bỏ ảnh này</button></div></div>';
+  }
+  function veAnh() { var v = $('#anhV'); if (v) { v.innerHTML = anhView(); wireAnh(); } }
+  function wireAnh() { var x = $('#bXoaAnh'); if (x) x.onclick = function () { st.anh = null; veAnh(); }; }
+  function docB64(blob, cb) { var r = new FileReader(); r.onload = function () { cb(String(r.result).split(',')[1] || ''); }; r.onerror = function () { cb(''); }; r.readAsDataURL(blob); }
+  function layAnh(f) {
+    if (!/^image\//.test(f.type || 'image/') ) { toast('Hãy chọn 1 file ảnh.'); return; }
+    anhBusy = true; veAnh();
+    var xong = function (a) { anhBusy = false; st.anh = a; veAnh(); if (a) clearBad('#qAnh'); };
+    var goc = function () {                                       // không thu nhỏ được (vd. HEIC trên Chrome) ⇒ gửi ảnh gốc nếu ≤ 8 MB
+      if (f.size > 8 * 1024 * 1024) { xong(null); toast('Ảnh quá lớn hoặc máy không đọc được ảnh này. Hãy chọn ảnh khác hoặc chụp lại.'); return; }
+      docB64(f, function (b) { xong(b ? { b64: b, mime: f.type || 'image/jpeg', name: f.name || 'anh.jpg', kb: f.size / 1024, prev: '' } : null); });
+    };
+    var url = URL.createObjectURL(f), im = new Image();
+    im.onload = function () {
+      try {
+        var w = im.naturalWidth, h = im.naturalHeight, k = Math.min(1, MAXP / Math.max(w, h));
+        var c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(h * k);
+        var g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(im, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        var d = c.toDataURL('image/jpeg', 0.82), b = d.split(',')[1] || '';
+        if (!b) return goc();
+        var t = document.createElement('canvas'), kt = 192 / Math.max(c.width, c.height); t.width = Math.round(c.width * kt); t.height = Math.round(c.height * kt);
+        t.getContext('2d').drawImage(c, 0, 0, t.width, t.height);
+        xong({ b64: b, mime: 'image/jpeg', name: (f.name || 'anh').replace(/\.[^.]+$/, '') + '.jpg', kb: b.length * 0.75 / 1024, prev: t.toDataURL('image/jpeg', 0.7) });
+      } catch (e) { goc(); }
+    };
+    im.onerror = function () { URL.revokeObjectURL(url); goc(); };
+    im.src = url;
   }
 
   /* ---------- Nói để viết (giọng nói của trình duyệt) ---------- */
@@ -267,7 +329,9 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
     var chk = [['#qTen', st.ten.length < 4 || st.ten.indexOf(' ') < 0, 'Họ và tên'], ['#qLop', !st.lop, 'Lớp'], ['#qHd', !st.hd.length, 'Hoạt động đã tham gia'],
                ['#qr1', !st.r1, 'Đánh giá câu 1'], ['#qr2', !st.r2, 'Đánh giá câu 2'], ['#qr3', !st.r3, 'Đánh giá câu 3'], ['#qr4', !st.r4, 'Đánh giá câu 4'],
                ['#qtam', st.tam.length < 5, 'Điều tâm đắc nhất'], ['#qtin', st.tin.length < 5, 'Thông tin mới thu nhận được'],
-               ['#qDh', !st.dh, 'Định hướng sau Ngày hội'], ['#qKhoi', !st.khoi.length, 'Khối / tổ hợp dự định thi'], ['#qke', st.ke.length < 5, 'Kế hoạch tiếp theo']];
+               ['#qDh', !st.dh, 'Định hướng sau Ngày hội'], ['#qKhoi', !st.khoi.length, 'Khối / tổ hợp dự định thi'], ['#qke', st.ke.length < 5, 'Kế hoạch tiếp theo'],
+               ['#qAnh', !st.anh, 'Ảnh minh chứng']];
+    if (anhBusy) { $('#err').textContent = 'Ảnh đang được xử lý, chờ 1–2 giây rồi bấm Nộp lại.'; return; }
     var miss = chk.filter(function (c) { $(c[0]).classList.toggle('bad', c[1]); return c[1]; });
     if (miss.length) {
       $('#err').textContent = 'Còn thiếu: ' + miss.map(function (c) { return c[2]; }).join(', ') + ' — hãy điền đủ trước khi nộp.';
@@ -284,6 +348,7 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
       '<p class="cf">Đánh giá: bổ ích chung <b>' + st.r1 + '/5</b> · diễn giả <b>' + st.r2 + '/5</b> · trải nghiệm, gian hàng <b>' + st.r3 + '/5</b> · hiểu rõ hơn về ngành nghề <b>' + st.r4 + '/5</b></p>' +
       '<div class="cf">Điều em tâm đắc nhất:</div><div class="q">' + esc(st.tam) + '</div>' +
       '<p class="cf">Định hướng: <b>' + esc(st.dh) + '</b>' + (ng.length ? '<br>Nhóm ngành quan tâm: <b>' + esc(ng.join(', ')) + '</b>' : '') + '<br>Khối thi dự định: <b>' + esc(kh.join('; ')) + '</b></p>' +
+      '<div class="cf">Ảnh minh chứng:</div>' + (anhSrc(st.anh) ? '<img class="cfimg" src="' + anhSrc(st.anh) + '" alt="Ảnh minh chứng">' : '<div class="q">' + esc(st.anh.name) + '</div>') +
       '<button type="button" class="btn pri" id="ok">Đúng, nộp phiếu</button><button type="button" class="btn ghost" id="sua">Sửa lại</button></div>';
     document.body.appendChild(ov);
     var close = function () { ov.remove(); };
@@ -292,11 +357,13 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
     ov.querySelector('#ok').onclick = function () { close(); gui(); };
   }
 
-  function obGet() { try { return JSON.parse(localStorage.getItem(OB) || '[]'); } catch (e) { return []; } }
-  function obSet(a) { try { localStorage.setItem(OB, JSON.stringify(a)); } catch (e) {} }
+  var mem = null;                                                  // máy hết chỗ lưu (ảnh lớn) ⇒ giữ hàng đợi trong bộ nhớ trang
+  function obGet() { if (mem) return mem.slice(); try { return JSON.parse(localStorage.getItem(OB) || '[]'); } catch (e) { return []; } }
+  function obSet(a) { try { localStorage.setItem(OB, JSON.stringify(a)); mem = null; } catch (e) { mem = a.slice(); } }
   function gui() {
     var p = { lop: st.lop, ten: st.ten, hd: st.hd.slice(), r1: st.r1, r2: st.r2, r3: st.r3, r4: st.r4, tam: st.tam, tin: st.tin, ky: st.ky,
               dh: st.dh, nganh: st.nganh.slice(), nganhKhac: st.nganhKhac, khoi: st.khoi.slice(), khoiKhac: st.khoiKhac, dinh: st.dinh, ke: st.ke, gopy: st.gopy, web: $('#web').value,
+              anh: st.anh ? { b64: st.anh.b64, mime: st.anh.mime, name: st.anh.name } : null,
               rid: Date.now().toString(36) + Math.random().toString(36).slice(2, 8) };
     var a = obGet(); a.push(p); obSet(a);
     done(p); flush();
@@ -312,18 +379,19 @@ footer{font-size:12px;color:var(--mut);text-align:center;margin-top:18px}
         running = false; obSet(obGet().filter(function (x) { return x.rid !== p.rid; }));
         if (j && j.ok) { tries = 0; status(p.rid, 'ok'); flush(); } else status(p.rid, 'bad', (j && j.error) || '');
       })
-      .catch(function () { running = false; tries++; status(p.rid, 'wait'); setTimeout(flush, Math.min(30000, 2000 * tries)); });
+      .catch(function () { running = false; tries++; status(p.rid, mem ? 'mem' : 'wait'); setTimeout(flush, Math.min(30000, 2000 * tries)); });
   }
   function status(rid, s, msg) {
     var el = document.querySelector('[data-rid="' + rid + '"]'); if (!el) return;
     el.className = 'st' + (s === 'ok' ? ' ok' : '');
-    el.textContent = s === 'ok' ? '✓ Đã lưu phiếu thu hoạch.' : s === 'wait' ? 'Mạng yếu — phiếu được giữ trên máy và tự gửi lại khi có mạng.'
+    el.textContent = s === 'ok' ? '✓ Đã lưu phiếu thu hoạch và ảnh minh chứng.' : s === 'wait' ? 'Mạng yếu — phiếu được giữ trên máy và tự gửi lại khi có mạng.'
+      : s === 'mem' ? 'Mạng yếu — đang thử gửi lại. Em giữ trang này mở tới khi thấy dòng "Đã lưu".'
       : 'Chưa lưu được: ' + msg + ' Hãy bấm "Sửa phiếu" và nộp lại.';
   }
   function done(p) {
     app.innerHTML = '<section class="card done"><div class="ic">' + OK + '</div><h2>Đã nộp phiếu thu hoạch</h2>' +
       '<p>Cảm ơn em ' + esc(p.ten) + ' (lớp ' + p.lop + '). Phiếu của em đã được gửi về giáo viên chủ nhiệm và Ban tổ chức.</p>' +
-      '<div class="st" data-rid="' + p.rid + '">Đang lưu…</div>' +
+      '<div class="st" data-rid="' + p.rid + '">Đang gửi phiếu và ảnh…</div>' +
       '<button type="button" class="btn ghost" id="bSua">Sửa phiếu và nộp lại</button></section>';
     $('#bSua').onclick = function () { form(); window.scrollTo(0, 0); };
     window.scrollTo(0, 0);
